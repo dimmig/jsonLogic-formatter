@@ -48,11 +48,11 @@ export const Result = (props) => {
     if (props.needToValidate) {
       if (fullValidation(rule, data)) {
         resultArea.animate(valid_options, {
-          duration: 1000,
+          duration: 500,
         });
       } else {
         resultArea.animate(notValid_options, {
-          duration: 1000,
+          duration: 500,
         });
       }
     }
