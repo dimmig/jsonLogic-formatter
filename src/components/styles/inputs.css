@@ -1,0 +1,152 @@
+.heading {
+  font-family: "Roboto";
+  font-size: 32px;
+}
+
+.textarea {
+  height: 15rem;
+  width: 30rem;
+  font-size: 20px;
+  font-family: "Open Sans";
+  font-weight: 200;
+  margin-top: 15px;
+  outline: none;
+  resize: none;
+  border: 1px solid #fac585;
+}
+
+.textarea:focus {
+  outline: none;
+  border: 1px solid #fac585;
+  box-shadow: 0 0 10px #fac585;
+  transition: all 0.1s ease;
+}
+
+.textarea-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.copy-button {
+  width: max-content;
+  height: 30px;
+  outline: none;
+  border: 1px solid #000;
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  transition: all 0.1s ease;
+}
+
+.copy-button span {
+  display: flex;
+  align-items: center;
+  gap: 5%;
+}
+
+.copy-icon {
+  font-size: 10px;
+}
+
+.copy-button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.result-textarea {
+  height: max-content;
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+  border: 1px solid #fac585;
+}
+
+#result-area > p {
+  font-size: 16px;
+  font-weight: 200;
+}
+
+.error {
+  display: flex;
+  width: 300px;
+  height: 100px;
+  border: 1px solid #fff;
+  background-color: #e65c00;
+  opacity: 0.8;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+  padding: 10px;
+}
+
+.error h2 {
+  font-family: "Open Sans";
+  font-size: 20px;
+  color: #fff;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.default {
+  background-color: #e65c00;
+  color: #fff;
+  display: inline-block;
+  padding: 0 10px;
+  margin: 10px;
+  margin-bottom: 0;
+}
+
+@keyframes back-valid {
+  0% {
+    background-color: rgba(118, 219, 145, 0);
+  }
+  50% {
+    background-color: rgba(118, 219, 145, 0.4);
+  }
+  100% {
+    background-color: rgba(118, 219, 145, 0);
+  }
+}
+
+@keyframes back-not-valid {
+  0% {
+    background-color: rgba(250, 105, 73, 0);
+  }
+  50% {
+    background-color: rgba(250, 105, 73, 0.4);
+  }
+  100% {
+    background-color: rgba(250, 105, 73, 0);
+  }
+}
+
+.valid {
+  animation: back-valid 1s ease-out 0s;
+}
+
+.not-valid {
+  animation: back-not-valid 1s ease-out 0s;
+}
+
+@media (max-width: 1023px) {
+  .textarea {
+    width: 90vw;
+    height: 15rem;
+  }
+
+  pre {
+    width: 90vw;
+  }
+  code {
+    display: block;
+    overflow-x: auto;
+    width: inherit;
+  }
+}

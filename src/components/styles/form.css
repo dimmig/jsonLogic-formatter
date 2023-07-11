@@ -1,0 +1,78 @@
+.form {
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.buttons button {
+  height: 50px;
+  width: 100px;
+  font-size: 1em;
+  font-family: "Open Sans";
+  outline: none;
+  border: 1px solid #fff;
+  background-color: #fac585;
+  color: #fff;
+}
+
+.buttons button:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.completed {
+  background-color: rgb(83, 217, 30);
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.buttons button:active {
+  background-color: #c47530;
+  opacity: 0.8;
+}
+
+.invisible {
+  display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 767px) {
+  .buttons {
+    margin: 1em 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form {
+    flex-direction: column;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .buttons {
+    margin: 1em 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form {
+    flex-direction: column;
+  }
+}
+
