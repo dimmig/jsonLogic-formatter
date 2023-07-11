@@ -11,13 +11,13 @@ export const Result = (props) => {
 
   const valid_options = [
     { backgroundColor: "rgba(118, 219, 145, 0)" },
-    { backgroundColor: "rgba(118, 219, 145, 0.4)" },
+    { backgroundColor: "rgba(118, 219, 145, 0.6)" },
     { backgroundColor: "rgba(118, 219, 145, 0)" },
   ];
 
   const notValid_options = [
     { backgroundColor: "rgba(250, 105, 73, 0)" },
-    { backgroundColor: "rgba(250, 105, 73, 0.4)" },
+    { backgroundColor: "rgba(250, 105, 73, 0.6)" },
     { backgroundColor: "rgba(250, 105, 73, 0)" },
   ];
 
@@ -34,7 +34,7 @@ export const Result = (props) => {
 
     if (resultArea !== null) {
       const p = resultArea.children[0];
-      p.innerHTML = `<pre><code>${props.jsonData}</code></pre>`;
+      p.innerHTML = `<pre id="code-area"><code>${props.jsonData}</code></pre>`;
     }
 
     const errorMessage = document.getElementById("error-message");
@@ -45,14 +45,14 @@ export const Result = (props) => {
     const copyButton = document.getElementById("copy-button");
     copyButton.classList.remove("invisible");
 
-    if (props.needToValidate) {
+    if (props.needToValidate && !props.jsonData.includes("No data")) {
       if (fullValidation(rule, data)) {
         resultArea.animate(valid_options, {
-          duration: 500,
+          duration: 1000,
         });
       } else {
         resultArea.animate(notValid_options, {
-          duration: 500,
+          duration: 1000,
         });
       }
     }
