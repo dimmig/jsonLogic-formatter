@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/jsonLogic-formatter/static/css/main.d48995e0.css",
-    "main.js": "/jsonLogic-formatter/static/js/main.82814290.js",
-    "static/js/787.d7679f61.chunk.js": "/jsonLogic-formatter/static/js/787.d7679f61.chunk.js",
-    "index.html": "/jsonLogic-formatter/index.html",
-    "main.d48995e0.css.map": "/jsonLogic-formatter/static/css/main.d48995e0.css.map",
-    "main.82814290.js.map": "/jsonLogic-formatter/static/js/main.82814290.js.map",
-    "787.d7679f61.chunk.js.map": "/jsonLogic-formatter/static/js/787.d7679f61.chunk.js.map"
+    "main.css": "/jsonLogic-validator/static/css/main.d48995e0.css",
+    "main.js": "/jsonLogic-validator/static/js/main.0691fd27.js",
+    "static/js/787.d7679f61.chunk.js": "/jsonLogic-validator/static/js/787.d7679f61.chunk.js",
+    "index.html": "/jsonLogic-validator/index.html",
+    "main.d48995e0.css.map": "/jsonLogic-validator/static/css/main.d48995e0.css.map",
+    "main.0691fd27.js.map": "/jsonLogic-validator/static/js/main.0691fd27.js.map",
+    "787.d7679f61.chunk.js.map": "/jsonLogic-validator/static/js/787.d7679f61.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d48995e0.css",
-    "static/js/main.82814290.js"
+    "static/js/main.0691fd27.js"
   ]
 }
