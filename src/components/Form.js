@@ -4,11 +4,27 @@ import { validate } from "../logic/validator";
 import { Data } from "./inputs/Data";
 import { Result } from "./inputs/Result";
 import { Rule } from "./inputs/Rule";
+import { apply } from "json-logic-js";
 import "./styles/form.css";
 
 export const Forms = () => {
   const [parsedJson, setParsedJson] = useState(null);
-  const [needToValidate, setNeedToValidate] = useState(false);
+
+  const valid_options = [
+    { backgroundColor: "rgba(118, 219, 145, 0)" },
+    { backgroundColor: "rgba(118, 219, 145, 0.6)" },
+    { backgroundColor: "rgba(118, 219, 145, 0)" },
+  ];
+
+  const notValid_options = [
+    { backgroundColor: "rgba(250, 105, 73, 0)" },
+    { backgroundColor: "rgba(250, 105, 73, 0.6)" },
+    { backgroundColor: "rgba(250, 105, 73, 0)" },
+  ];
+
+  function fullValidation(rule, data) {
+    return apply(JSON.parse(rule), JSON.parse(data));
+  }
 
   window.onload = () => {
     sessionStorage.clear();
@@ -38,7 +54,23 @@ export const Forms = () => {
                 validatedData
               )
             );
-            setNeedToValidate(true);
+
+            if (document.getElementById("result-p") !== null) {
+              if (
+                fullValidation(
+                  JSON.parse(sessionStorage.getItem("rule-data")),
+                  JSON.parse(sessionStorage.getItem("data"))
+                )
+              ) {
+                document
+                  .getElementById("result-p")
+                  .animate(valid_options, { duration: 1000 });
+              } else {
+                document
+                  .getElementById("result-p")
+                  .animate(notValid_options, { duration: 1000 });
+              }
+            }
           }}
         >
           Validate
@@ -52,14 +84,13 @@ export const Forms = () => {
             setParsedJson(
               formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), false)
             );
-            setNeedToValidate(false);
           }}
         >
           Format
         </button>
       </div>
       <div id="result">
-        <Result jsonData={parsedJson} needToValidate={needToValidate} />
+        <Result jsonData={parsedJson} />
       </div>
     </div>
   );

@@ -1,30 +1,11 @@
 import React, { useState } from "react";
 import { AiOutlineCopy, AiOutlineCheckCircle } from "react-icons/ai";
-import { apply } from "json-logic-js";
 import { NOT_VALID_DATA, NOT_VALID_RULE } from "../../logic/constants";
 import "../styles/inputs.css";
 
 export const Result = (props) => {
   const [isCopied, setIsCopied] = useState(false);
-  const rule = JSON.parse(sessionStorage.getItem("rule-data"));
-  const data = JSON.parse(sessionStorage.getItem("data"));
-
-  const valid_options = [
-    { backgroundColor: "rgba(118, 219, 145, 0)" },
-    { backgroundColor: "rgba(118, 219, 145, 0.6)" },
-    { backgroundColor: "rgba(118, 219, 145, 0)" },
-  ];
-
-  const notValid_options = [
-    { backgroundColor: "rgba(250, 105, 73, 0)" },
-    { backgroundColor: "rgba(250, 105, 73, 0.6)" },
-    { backgroundColor: "rgba(250, 105, 73, 0)" },
-  ];
-
-  function fullValidation(rule, data) {
-    return apply(JSON.parse(rule), JSON.parse(data));
-  }
-
+  
   if (
     props.jsonData &&
     props.jsonData !== NOT_VALID_RULE &&
@@ -44,18 +25,6 @@ export const Result = (props) => {
 
     const copyButton = document.getElementById("copy-button");
     copyButton.classList.remove("invisible");
-
-    if (props.needToValidate && !props.jsonData.includes("No data")) {
-      if (fullValidation(rule, data)) {
-        resultArea.animate(valid_options, {
-          duration: 1000,
-        });
-      } else {
-        resultArea.animate(notValid_options, {
-          duration: 1000,
-        });
-      }
-    }
   } else if (document.getElementById("error-message") !== null) {
     const errorMessage = document.getElementById("error-message");
     errorMessage.classList.remove("invisible");
@@ -92,7 +61,7 @@ export const Result = (props) => {
         <button
           id="copy-button"
           className="copy-button invisible"
-          onClick={() => copy("result")}
+          onClick={() => copy("result-p")}
         >
           {isCopied ? (
             <span>
@@ -106,9 +75,8 @@ export const Result = (props) => {
             </span>
           )}
         </button>
-
         <div className="invisible" spellCheck="false" id="result-area">
-          <p className="result-textarea" id="result"></p>
+          <p className="result-textarea" id="result-p"></p>
         </div>
       </div>
       <div className="error invisible" id="error-message">

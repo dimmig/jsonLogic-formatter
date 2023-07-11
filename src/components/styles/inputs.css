@@ -3,6 +3,10 @@
   font-size: 32px;
 }
 
+pre {
+  width: 90vw;
+}
+
 .textarea {
   height: 15rem;
   width: 30rem;
@@ -60,6 +64,7 @@
   white-space: nowrap;
   width: max-content;
   border: 1px solid #fac585;
+  overflow-x: auto;
 }
 
 #result-area > p {
@@ -117,9 +122,6 @@
     height: 15rem;
   }
 
-  pre {
-    width: 90vw;
-  }
   code {
     display: block;
     overflow-x: auto;
