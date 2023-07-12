@@ -54,8 +54,7 @@ export const Forms = () => {
                 validatedData
               )
             );
-
-            if (document.getElementById("result-p") !== null) {
+            if (document.getElementById("result-p") !== null && validatedData) {
               if (
                 fullValidation(
                   JSON.parse(sessionStorage.getItem("rule-data")),
@@ -65,10 +64,23 @@ export const Forms = () => {
                 document
                   .getElementById("result-p")
                   .animate(valid_options, { duration: 1000 });
+
+                document
+                  .getElementById("result-p")
+                  .classList.remove("red-border");
+
+                document
+                  .getElementById("result-p")
+                  .classList.add("green-border");
               } else {
                 document
                   .getElementById("result-p")
                   .animate(notValid_options, { duration: 1000 });
+
+                document
+                  .getElementById("result-p")
+                  .classList.remove("green-border");
+                document.getElementById("result-p").classList.add("red-border");
               }
             }
           }}
