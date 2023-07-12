@@ -15,7 +15,7 @@ export const Result = (props) => {
 
     if (resultArea !== null) {
       const p = resultArea.children[0];
-      p.innerHTML = `<pre id="code-area"><code>${props.jsonData}</code></pre>`;
+      p.innerHTML = `<pre><code>${props.jsonData}</code></pre>`;
     }
 
     const errorMessage = document.getElementById("error-message");
