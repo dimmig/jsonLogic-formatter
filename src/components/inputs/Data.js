@@ -10,6 +10,7 @@ export const Data = () => {
         spellCheck="false"
         placeholder="Type your data here"
         className="textarea"
+        id="data-textarea"
         onChange={(e) => isValidData(e.target.value)}
       />
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { formatJSON } from "../logic/formatter/formatter";
 import { validate } from "../logic/validator";
 import { Data } from "./inputs/Data";
@@ -9,6 +9,7 @@ import "./styles/form.css";
 
 export const Forms = () => {
   const [parsedJson, setParsedJson] = useState(null);
+  const bottomRef = useRef(null);
 
   const valid_options = [
     { backgroundColor: "rgba(118, 219, 145, 0)" },
@@ -26,24 +27,32 @@ export const Forms = () => {
     return apply(JSON.parse(rule), JSON.parse(data));
   }
 
+  function scrollToBottom() {
+    if (bottomRef.current) {
+      setTimeout(() => {
+        bottomRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
+        });
+      }, 0);
+    }
+  }
+
   window.onload = () => {
     sessionStorage.clear();
   };
 
   return (
-    <div className="app" id="app">
+    <div className="app" id="app" ref={bottomRef}>
       <div className="form">
         <Rule />
+
         <Data />
       </div>
       <div className="buttons">
         <button
+          className="default-button"
           onClick={() => {
-            window.scrollTo({
-              top: document.getElementById("result").offsetTop,
-              behavior: "smooth",
-            });
-
             const validatedData = validate(
               JSON.parse(sessionStorage.getItem("rule-data")),
               JSON.parse(sessionStorage.getItem("data"))
@@ -83,19 +92,20 @@ export const Forms = () => {
                 document.getElementById("result-p").classList.add("red-border");
               }
             }
+            scrollToBottom();
           }}
         >
           Validate
         </button>
+
         <button
+          className="default-button"
           onClick={() => {
-            window.scrollTo({
-              top: document.getElementById("result").offsetTop,
-              behavior: "smooth",
-            });
             setParsedJson(
               formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), false)
             );
+
+            scrollToBottom();
           }}
         >
           Format

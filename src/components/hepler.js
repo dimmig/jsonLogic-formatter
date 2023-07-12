@@ -2,7 +2,6 @@
 export const isValidRule = (jsonStr) => {
   try {
     JSON.parse(jsonStr);
-
     sessionStorage.setItem("rule-data", JSON.stringify(jsonStr));
     return true;
   } catch (e) {

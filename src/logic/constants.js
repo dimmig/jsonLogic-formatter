@@ -10,5 +10,7 @@ export const MULTIPLY = `{"*":`;
 export const DIVIDE = `{"/":`;
 export const PLUS = `{"+":`;
 export const MINUS = `{"-":`;
-export const NOT_VALID_RULE="Not valid rule"
-export const NOT_VALID_DATA="Not valid data"
+export const NOT_VALID_RULE = "Not valid rule";
+export const NOT_VALID_DATA = "Not valid data";
+export const EXAMPLE_RULE = `{"or":[{"!=":[{"var":"IsConditionMet"},true]},{"<=":[{"var":"CurrentValue"},{"+":[{"var":"MaxValue"},{"var":"Increase"},0.75]}]},{"and":[{"==":[{"var":"HasExtraCondition"},true]},{"==":[{"var":"IsSingleUser"},true]},{"<=":[{"var":"CurrentValue"},{"+":[{"var":"MaxValue"},{"var":"Increase"},0.75,1]}]}]}]}`;
+export const EXAMPLE_DATA = `{"IsConditionMet": true,"CurrentValue": 42,"MaxValue": 100,"Increase": 0.5,"HasExtraCondition": false,"IsSingleUser": true}`;
