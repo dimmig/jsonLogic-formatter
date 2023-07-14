@@ -5,7 +5,7 @@ export const isValidRule = (jsonStr) => {
     sessionStorage.setItem("rule-data", JSON.stringify(jsonStr));
     return true;
   } catch (e) {
-    sessionStorage.clear();
+    sessionStorage.removeItem("rule-data");
     return false;
   }
 };

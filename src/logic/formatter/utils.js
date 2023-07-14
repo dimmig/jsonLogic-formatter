@@ -34,6 +34,50 @@ export function isOrCondition(value) {
   return value === "or";
 }
 
+function createTooltip(name) {
+  const data = JSON.parse(sessionStorage.getItem("data"));
+  return `<span class="tooltip">${JSON.parse(data)[name]}</span>`;
+}
+
+function createResponsiveItem(obj, status, lastBrace = false) {
+  const vars = [];
+  if (typeof obj[1] === "object") {
+    if (obj[1].var) {
+      vars.push(obj[1].var);
+    } else {
+      for (const innerObj of Object.values(obj[1])[0]) {
+        vars.push(innerObj.var ? innerObj.var : innerObj);
+      }
+    }
+
+    let data = vars.map((item) => {
+      if (typeof item === "number") {
+        return item;
+      } else {
+        return `{"var":<span class="var-name" id="var-data">"${item}"</span>}`;
+      }
+    });
+
+    const braces = lastBrace ? "]}]}" : "]}]},";
+    data = "[" + data.join(",") + braces;
+
+    const firstVar = `{"var":<span class="var-name" id="var-data">${JSON.stringify(
+      obj[0].var
+    )}</span>}`;
+
+    const result = `<span class="${status}">[${firstVar},{${JSON.stringify(
+      Object.keys(obj[1])[0]
+    )}:${data} <span class="tooltip" id="tooltip"></span></span>\n`;
+
+    return result;
+  }
+  return `<span class="${status}">[{"var":"<span class="var-name">${
+    obj[0].var
+  }</span>"},${JSON.stringify(obj[1])}${
+    lastBrace ? "]}" : "]},"
+  }${createTooltip(obj[0].var)}</span>\n`;
+}
+
 export function goThroughInterface(
   interfaceData,
   result,
@@ -101,22 +145,24 @@ export function goThroughInterface(
           }
 
           if (validatedData[objItem[0].var] === true) {
-            result += `<span class="green">${stringifiedItem}}</span>\n`;
+            result += createResponsiveItem(objItem, "green");
           } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
             result += `${stringifiedItem}},${errHtml}\n`;
           } else {
             if (validatedData[objItem[0].var].length) {
               if (validatedData[objItem[0].var][0]) {
-                result += `<span class="green">${stringifiedItem}}</span>\n`;
+                // result += `<span class="green">${stringifiedItem}},</span>\n`;
+                result += createResponsiveItem(objItem, "green", true);
               } else {
-                result += `<span class="red">${stringifiedItem}}</span>\n`;
+                // result += `<span class="red">${stringifiedItem}}</span>\n`;
+                result += createResponsiveItem(objItem, "red", true);
               }
               validatedData[objItem[0].var].shift();
               nesting--;
               continue;
             }
 
-            result += `<span class="red">${stringifiedItem}}</span>\n`;
+            result += createResponsiveItem(objItem, "red");
           }
           nesting--;
         } else {
@@ -126,20 +172,22 @@ export function goThroughInterface(
           }
 
           if (validatedData[objItem[0].var] === true) {
-            result += `<span class="green">${stringifiedItem}},</span>\n`;
+            result += createResponsiveItem(objItem, "green");
           } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
             result += `${stringifiedItem}},${errHtml}\n`;
           } else {
             if (validatedData[objItem[0].var].length) {
               if (validatedData[objItem[0].var][0]) {
-                result += `<span class="green">${stringifiedItem}},</span>\n`;
+                // result += `<span class="green">${stringifiedItem}},</span>\n`;
+                result += createResponsiveItem(objItem, "green");
               } else {
-                result += `<span class="red">${stringifiedItem}},</span>\n`;
+                // result += `<span class="red">${stringifiedItem}},</span>\n`;
+                result += createResponsiveItem(objItem, "red");
               }
               validatedData[objItem[0].var].shift();
               continue;
             }
-            result += `<span class="red">${stringifiedItem}},</span>\n`;
+            result += createResponsiveItem(objItem, "red");
           }
         }
       }

@@ -5,7 +5,19 @@ import "../styles/inputs.css";
 
 export const Result = (props) => {
   const [isCopied, setIsCopied] = useState(false);
-  
+
+  function findTooltip(el) {
+    if (!el) {
+      return null;
+    }
+    const closestSpan = el.nextSibling;
+    if (closestSpan.id !== "tooltip") {
+      return findTooltip(closestSpan);
+    } else {
+      return closestSpan;
+    }
+  }
+
   if (
     props.jsonData &&
     props.jsonData !== NOT_VALID_RULE &&
@@ -25,6 +37,26 @@ export const Result = (props) => {
 
     const copyButton = document.getElementById("copy-button");
     copyButton.classList.remove("invisible");
+
+    const varData = document.querySelectorAll("#var-data");
+    if (varData !== null) {
+      varData.forEach((el) => {
+        el.addEventListener("mouseover", () => {
+          const data = JSON.parse(JSON.parse(sessionStorage.getItem("data")));
+          const varName = JSON.parse(el.textContent);
+          if (data !== null) {
+            const tooltip = findTooltip(el);
+            tooltip.classList.add("active-tooltip");
+            tooltip.textContent = data[varName];
+          }
+        });
+
+        el.addEventListener("mouseout", () => {
+          const tooltip = findTooltip(el);
+          tooltip.classList.remove("active-tooltip");
+        });
+      });
+    }
   } else if (document.getElementById("error-message") !== null) {
     const errorMessage = document.getElementById("error-message");
     errorMessage.classList.remove("invisible");

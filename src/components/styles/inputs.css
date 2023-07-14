@@ -8,7 +8,7 @@ pre {
 }
 
 .textarea {
-  height: 10rem;
+  height: 20vh;
   width: 90vw;
   font-size: 20px;
   font-family: "Open Sans";
@@ -98,6 +98,30 @@ pre {
   font-family: "Open Sans";
   font-size: 20px;
   color: #fff;
+}
+
+.tooltip {
+  position: absolute;
+  height: max-content;
+  width: max-content;
+  background-color: #afa3a3;
+  color: #fff;
+  padding: 0 5px;
+  display: none;
+  margin-left: .5rem;
+}
+
+.var-name:hover + .tooltip {
+  display: inline-block;
+}
+
+.active-tooltip {
+  display: inline-block;
+}
+
+.var-name:hover {
+  background-color: #fac585;
+  cursor: default;
 }
 
 .green {
