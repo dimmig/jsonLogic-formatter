@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { formatJSON } from "../logic/formatter/formatter";
 import { validate } from "../logic/validator";
 import { Data } from "./inputs/Data";
@@ -10,6 +10,25 @@ import "./styles/form.css";
 export const Forms = () => {
   const [parsedJson, setParsedJson] = useState(null);
   const bottomRef = useRef(null);
+
+  function save(rule, data) {
+    sessionStorage.setItem("rule-data", JSON.stringify(rule));
+    sessionStorage.setItem("data", JSON.stringify(data));
+  }
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("rule") && url.searchParams.get("data")) {
+      const decodedRule = atob(url.searchParams.get("rule"));
+      const decodedData = atob(url.searchParams.get("data"));
+      setTimeout(() => {
+        save(decodedRule, decodedData);
+      }, 10);
+
+      document.getElementById("rule-textarea").value = decodedRule;
+      document.getElementById("data-textarea").value = decodedData;
+    }
+  }, []);
 
   const valid_options = [
     { backgroundColor: "rgba(118, 219, 145, 0)" },

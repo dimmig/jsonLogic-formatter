@@ -56,10 +56,7 @@ function goThroughtObject(array, parsedData, result) {
             ? (comparedValue = compare(k, parsedData[value[0].var], value[1]))
             : (comparedValue = null);
         }
-        if (
-          // parsedData.hasOwnProperty(value[0].var) &&
-          !result.hasOwnProperty(value[0].var)
-        ) {
+        if (!result.hasOwnProperty(value[0].var)) {
           if (comparedValue) {
             result[value[0].var] = true;
           } else if (comparedValue !== null) {
@@ -68,16 +65,16 @@ function goThroughtObject(array, parsedData, result) {
             continue;
           }
         } else {
-          if (result[value[0].var].length >1) {
-          comparedValue
-            ? (result[value[0].var] = [...result[value[0].var], true])
-            : (result[value[0].var] = [...result[value[0].var], false]);
-        } else {
-          comparedValue
-          ? (result[value[0].var] = [...[result[value[0].var]], true])
-          : (result[value[0].var] = [...[result[value[0].var]], false]);
+          if (result[value[0].var].length > 1) {
+            comparedValue
+              ? (result[value[0].var] = [...result[value[0].var], true])
+              : (result[value[0].var] = [...result[value[0].var], false]);
+          } else {
+            comparedValue
+              ? (result[value[0].var] = [...[result[value[0].var]], true])
+              : (result[value[0].var] = [...[result[value[0].var]], false]);
+          }
         }
-      }
 
         continue;
       }

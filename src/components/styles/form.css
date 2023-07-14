@@ -50,6 +50,23 @@
   opacity: 1;
 }
 
+.url-button {
+  background-color: #fff;
+  color: #c47530;
+  border: 1px solid #fac585;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: max-content;
+}
+
+.url-button-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .completed {
   background-color: rgb(83, 217, 30);
   color: #fff;
@@ -59,6 +76,10 @@
 .default-button:active {
   background-color: #c47530;
   opacity: 0.8;
+}
+
+.url-button:active {
+  background-color: #fff;
 }
 
 .invisible {
