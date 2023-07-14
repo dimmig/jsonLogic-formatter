@@ -135,7 +135,7 @@ function compare(sign, got, wanted) {
     case "<=":
       return got <= wanted;
 
-    case "< ":
+    case "<":
       return got < wanted;
 
     default:
