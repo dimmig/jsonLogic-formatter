@@ -7,6 +7,16 @@ import "../styles/form.css";
 export const Data = () => {
   const [copied, setCopied] = useState(null);
 
+  function filterData(rule, data) {
+    const result = {};
+    for (const key of Object.keys(JSON.parse(data))) {
+      if (rule.includes(key)) {
+        result[key] = JSON.parse(data)[key];
+      }
+    }
+    return result;
+  }
+
   return (
     <div>
       <div className="rule-button-block">
@@ -20,14 +30,14 @@ export const Data = () => {
               sessionStorage.getItem("data") !== null
             ) {
               const url = new URL(window.location.href);
-              url.searchParams.set(
-                "rule",
-                btoa(JSON.parse(sessionStorage.getItem("rule-data")))
-              );
-              url.searchParams.set(
-                "data",
-                btoa(JSON.parse(sessionStorage.getItem("data")))
-              );
+              const rule = JSON.parse(sessionStorage.getItem("rule-data"));
+              const data = JSON.parse(sessionStorage.getItem("data"));
+
+              const filtredData = filterData(rule, data);
+
+              url.searchParams.set("rule", btoa(rule));
+              url.searchParams.set("data", btoa(JSON.stringify(filtredData)));
+
               navigator.clipboard.writeText(url);
               document.getElementById("url-button").classList.add("completed");
               setCopied(true);
@@ -44,7 +54,9 @@ export const Data = () => {
           {copied ? (
             <span className="url-button-wrapper">
               Copied
-              <AiOutlineCheckCircle style={{ width: "1.5rem", height: "1.5rem" }} />
+              <AiOutlineCheckCircle
+                style={{ width: "1.5rem", height: "1.5rem" }}
+              />
             </span>
           ) : (
             "Encode url"

@@ -36,13 +36,37 @@ function goThroughtObject(array, parsedData, result) {
               computedValue = computeValue(innerKey, gotValues);
             }
           }
-          computedValue
+          computedValue || computedValue === 0
             ? (comparedValue = compare(
                 k,
                 parsedData[value[0].var],
                 computedValue
               ))
             : (comparedValue = null);
+        } else if (
+          typeof value[0] !== "boolean" &&
+          typeof value[0] !== "number" &&
+          typeof value[0] == "object" &&
+          !value[0].var &&
+          typeof value[1] === "number"
+        ) {
+          let computedValue;
+          for (const [innerKey, innerVal] of Object.entries(value[0])) {
+            if (Array.isArray(innerVal)) {
+              const gotValues = computeArray(innerVal, parsedData);
+              if (gotValues.includes(null)) {
+                continue;
+              }
+              computedValue = computeValue(innerKey, gotValues);
+            }
+          }
+          computedValue || computedValue === 0
+            ? (comparedValue = compare(k, computedValue, value[1]))
+            : (comparedValue = null);
+          for (const innerValue of Object.values(value[0])[0]) {
+            writeResult(result, innerValue.var, comparedValue);
+          }
+          continue;
         } else if (typeof value[1] === "object" && !Array.isArray(value[1])) {
           parsedData.hasOwnProperty(value[0].var)
             ? (comparedValue = compare(
@@ -82,6 +106,26 @@ function goThroughtObject(array, parsedData, result) {
     }
   }
   return result;
+}
+
+function writeResult(result, varName, comparedValue) {
+  if (!result.hasOwnProperty(varName)) {
+    if (comparedValue) {
+      result[varName] = true;
+    } else if (comparedValue !== null) {
+      result[varName] = false;
+    }
+  } else {
+    if (result[varName].length > 1) {
+      comparedValue
+        ? (result[varName] = [...result[varName], true])
+        : (result[varName] = [...result[varName], false]);
+    } else {
+      comparedValue
+        ? (result[varName] = [...[result[varName]], true])
+        : (result[varName] = [...[result[varName]], false]);
+    }
+  }
 }
 
 function computeArray(value, data) {

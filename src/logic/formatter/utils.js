@@ -39,9 +39,19 @@ function createTooltip(name) {
   return `<span class="tooltip">${JSON.parse(data)[name]}</span>`;
 }
 
+function createItems(vars) {
+  return vars.map((item) => {
+    if (typeof item === "number") {
+      return item;
+    } else {
+      return `{"var":<span class="var-name" id="var-data">"${item}"</span>}`;
+    }
+  });
+}
+
 function createResponsiveItem(obj, status, lastBrace = false) {
   const vars = [];
-  if (typeof obj[1] === "object") {
+  if (typeof obj[1] === "object" && typeof obj[0] === "object") {
     if (obj[1].var) {
       vars.push(obj[1].var);
     } else {
@@ -50,26 +60,37 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       }
     }
 
-    let data = vars.map((item) => {
-      if (typeof item === "number") {
-        return item;
-      } else {
-        return `{"var":<span class="var-name" id="var-data">"${item}"</span>}`;
-      }
-    });
+    let data = createItems(vars);
 
     const braces = lastBrace ? "]}]}" : "]}]},";
-    data = "[" + data.join(",") + braces;
 
     const firstVar = `{"var":<span class="var-name" id="var-data">${JSON.stringify(
       obj[0].var
     )}</span>}`;
 
-    const result = `<span class="${status}">[${firstVar},{${JSON.stringify(
+    if (typeof Object.values(obj[1])[0][0] !== "object") {
+      return `<span class="${status}">[${firstVar},${data.join(",")}${
+        lastBrace ? "]}" : "]},"
+      } <span class="tooltip" id="tooltip"></span></span>\n`;
+    }
+    data = "[" + data.join(",") + braces;
+
+    return `<span class="${status}">[${firstVar},{${JSON.stringify(
       Object.keys(obj[1])[0]
     )}:${data} <span class="tooltip" id="tooltip"></span></span>\n`;
-
-    return result;
+  } else if (typeof obj[0] === "object" && typeof obj[1] !== "object") {
+    if (Array.isArray(Object.values(obj[0])[0])) {
+      for (const innerObj of Object.values(obj[0])[0]) {
+        vars.push(innerObj.var ? innerObj.var : innerObj);
+      }
+      let data = createItems(vars);
+      const key = Object.keys(obj[0])[0];
+      return `[{"${key}":<span class="${status}">[${data.join(",")}]},${
+        obj[1]
+      }${
+        lastBrace ? "]}" : "]},"
+      }<span class="tooltip" id="tooltip"></span></span>\n`;
+    }
   }
   return `<span class="${status}">[{"var":"<span class="var-name">${
     obj[0].var
@@ -145,16 +166,14 @@ export function goThroughInterface(
           }
 
           if (validatedData[objItem[0].var] === true) {
-            result += createResponsiveItem(objItem, "green");
+            result += createResponsiveItem(objItem, "green", true);
           } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
             result += `${stringifiedItem}},${errHtml}\n`;
           } else {
             if (validatedData[objItem[0].var].length) {
               if (validatedData[objItem[0].var][0]) {
-                // result += `<span class="green">${stringifiedItem}},</span>\n`;
                 result += createResponsiveItem(objItem, "green", true);
               } else {
-                // result += `<span class="red">${stringifiedItem}}</span>\n`;
                 result += createResponsiveItem(objItem, "red", true);
               }
               validatedData[objItem[0].var].shift();
@@ -162,12 +181,33 @@ export function goThroughInterface(
               continue;
             }
 
-            result += createResponsiveItem(objItem, "red");
+            result += createResponsiveItem(objItem, "red", true); 
           }
           nesting--;
         } else {
           if (!validatedData) {
             result += `${stringifiedItem}},\n`;
+            continue;
+          }
+
+          if (!objItem[0].var && typeof objItem[0] === "object") {
+            const value = Object.values(objItem[0])[0][0];
+            if (validatedData[value.var] === true) {
+              result += createResponsiveItem(objItem, "green");
+            } else if (!validatedData.hasOwnProperty(value.var)) {
+              result += `${stringifiedItem}},${errHtml}\n`;
+            } else {
+              if (validatedData[value.var].length) {
+                if (validatedData[value.var][0]) {
+                  result += createResponsiveItem(objItem, "green");
+                } else {
+                  result += createResponsiveItem(objItem, "red");
+                }
+                validatedData[value.var].shift();
+              } else {
+                result += createResponsiveItem(objItem, "red");
+              }
+            }
             continue;
           }
 
@@ -178,10 +218,8 @@ export function goThroughInterface(
           } else {
             if (validatedData[objItem[0].var].length) {
               if (validatedData[objItem[0].var][0]) {
-                // result += `<span class="green">${stringifiedItem}},</span>\n`;
                 result += createResponsiveItem(objItem, "green");
               } else {
-                // result += `<span class="red">${stringifiedItem}},</span>\n`;
                 result += createResponsiveItem(objItem, "red");
               }
               validatedData[objItem[0].var].shift();
