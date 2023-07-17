@@ -14,8 +14,8 @@
 }
 
 .menu-circle {
-  height: 50px;
-  width: 50px;
+  height: 3rem;
+  width: 3rem;
   border-radius: 50%;
   background-color: #fac585;
   display: flex;

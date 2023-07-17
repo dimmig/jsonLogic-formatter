@@ -1,4 +1,3 @@
-
 export const isValidRule = (jsonStr) => {
   try {
     JSON.parse(jsonStr);
@@ -19,4 +18,11 @@ export const isValidData = (jsonStr) => {
     sessionStorage.removeItem("data");
     return false;
   }
+};
+
+export const areInputsClear = () => {
+  return (
+    document.getElementById("rule-textarea").value.length === 0 &&
+    document.getElementById("data-textarea").value.length === 0
+  );
 };

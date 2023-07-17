@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { isValidData } from "../hepler";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { areInputsClear } from "../hepler";
 import "../styles/inputs.css";
 import "../styles/form.css";
 
@@ -27,7 +28,8 @@ export const Data = () => {
           onClick={() => {
             if (
               sessionStorage.getItem("rule-data") !== null &&
-              sessionStorage.getItem("data") !== null
+              sessionStorage.getItem("data") !== null &&
+              !areInputsClear()
             ) {
               const url = new URL(window.location.href);
               const rule = JSON.parse(sessionStorage.getItem("rule-data"));

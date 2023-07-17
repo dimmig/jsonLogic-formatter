@@ -4,9 +4,10 @@ import { validate } from "../logic/validator";
 import { Data } from "./inputs/Data";
 import { Result } from "./inputs/Result";
 import { Rule } from "./inputs/Rule";
-import { apply } from "json-logic-js";
-import "./styles/form.css";
 import { BookmarkMenu } from "./BookmarkMenu";
+import { apply } from "json-logic-js";
+import { areInputsClear } from "./hepler";
+import "./styles/form.css";
 
 export const Forms = () => {
   const [parsedJson, setParsedJson] = useState(null);
@@ -17,17 +18,27 @@ export const Forms = () => {
     sessionStorage.setItem("data", JSON.stringify(data));
   }
 
+  function isSaved() {
+    return (
+      sessionStorage.getItem("rule-data") !== null &&
+      sessionStorage.getItem("data") !== null
+    );
+  }
+
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get("rule") && url.searchParams.get("data")) {
       const decodedRule = atob(url.searchParams.get("rule"));
       const decodedData = atob(url.searchParams.get("data"));
-      setTimeout(() => {
-        save(decodedRule, decodedData);
-      }, 10);
+
+      save(decodedRule, decodedData);
 
       document.getElementById("rule-textarea").value = decodedRule;
       document.getElementById("data-textarea").value = decodedData;
+
+      if (document.getElementById("validation-button") !== null && isSaved()) {
+        document.getElementById("validation-button").click();
+      }
     }
   }, []);
 
@@ -58,10 +69,6 @@ export const Forms = () => {
     }
   }
 
-  window.onload = () => {
-    sessionStorage.clear();
-  };
-
   return (
     <div className="app" id="app" ref={bottomRef}>
       <div className="form">
@@ -73,11 +80,23 @@ export const Forms = () => {
         <div className="buttons">
           <button
             className="default-button"
+            id="validation-button"
             onClick={() => {
-              const validatedData = validate(
+              let validatedData = validate(
                 JSON.parse(sessionStorage.getItem("rule-data")),
                 JSON.parse(sessionStorage.getItem("data"))
               );
+
+              if (areInputsClear()) {
+                setParsedJson(
+                  formatJSON(
+                    JSON.parse(sessionStorage.getItem("rule-data")),
+                    null
+                  )
+                );
+                scrollToBottom();
+                return;
+              }
               setParsedJson(
                 formatJSON(
                   JSON.parse(sessionStorage.getItem("rule-data")),
@@ -117,8 +136,9 @@ export const Forms = () => {
                     .getElementById("result-p")
                     .classList.add("red-border");
                 }
+
+                scrollToBottom();
               }
-              scrollToBottom();
             }}
           >
             Validate
@@ -127,6 +147,16 @@ export const Forms = () => {
           <button
             className="default-button"
             onClick={() => {
+              if (areInputsClear()) {
+                setParsedJson(
+                  formatJSON(
+                    JSON.parse(sessionStorage.getItem("rule-data")),
+                    null
+                  )
+                );
+                scrollToBottom();
+                return;
+              }
               setParsedJson(
                 formatJSON(
                   JSON.parse(sessionStorage.getItem("rule-data")),

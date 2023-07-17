@@ -33,14 +33,14 @@ export const Result = (props) => {
         if (data !== null) {
           const tooltip = findTooltip(el);
           tooltip.classList.add("active-tooltip");
-          tooltip.classList.add("tooltip-mobile-color")
+          tooltip.classList.add("tooltip-mobile-color");
           tooltip.textContent = data[varName];
         }
       });
       el.addEventListener("touchend", () => {
         const tooltip = findTooltip(el);
         tooltip.classList.remove("active-tooltip");
-        tooltip.classList.remove("tooltip-mobile-color")
+        tooltip.classList.remove("tooltip-mobile-color");
       });
     });
   }
