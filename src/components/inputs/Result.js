@@ -6,11 +6,48 @@ import "../styles/inputs.css";
 export const Result = (props) => {
   const [isCopied, setIsCopied] = useState(false);
 
+  function addHoverEvent(data) {
+    data.forEach((el) => {
+      el.addEventListener("mouseover", () => {
+        const data = JSON.parse(JSON.parse(sessionStorage.getItem("data")));
+        const varName = el.textContent.split('"')[1];
+        if (data !== null) {
+          const tooltip = findTooltip(el);
+          tooltip.classList.add("active-tooltip");
+          tooltip.textContent = data[varName];
+        }
+      });
+
+      el.addEventListener("mouseout", () => {
+        const tooltip = findTooltip(el);
+        tooltip.classList.remove("active-tooltip");
+      });
+    });
+  }
+
+  function addFocusEvent(data) {
+    data.forEach((el) => {
+      el.addEventListener("focus", () => {
+        const data = JSON.parse(JSON.parse(sessionStorage.getItem("data")));
+        const varName = el.textContent.split('"')[1];
+        if (data !== null) {
+          const tooltip = findTooltip(el);
+          tooltip.classList.add("active-tooltip");
+          tooltip.textContent = data[varName];
+        }
+      });
+      el.addEventListener("focusout", () => {
+        const tooltip = findTooltip(el);
+        tooltip.classList.remove("active-tooltip");
+      });
+    });
+  }
+
   function findTooltip(el) {
     if (!el) {
       return null;
     }
-    const closestSpan = el.nextSibling;
+    const closestSpan = el.children[0];
     if (closestSpan.id !== "tooltip") {
       return findTooltip(closestSpan);
     } else {
@@ -40,22 +77,9 @@ export const Result = (props) => {
 
     const varData = document.querySelectorAll("#var-data");
     if (varData !== null) {
-      varData.forEach((el) => {
-        el.addEventListener("mouseover", () => {
-          const data = JSON.parse(JSON.parse(sessionStorage.getItem("data")));
-          const varName = JSON.parse(el.textContent);
-          if (data !== null) {
-            const tooltip = findTooltip(el);
-            tooltip.classList.add("active-tooltip");
-            tooltip.textContent = data[varName];
-          }
-        });
-
-        el.addEventListener("mouseout", () => {
-          const tooltip = findTooltip(el);
-          tooltip.classList.remove("active-tooltip");
-        });
-      });
+      window.innerWidth > 1023
+        ? addHoverEvent(varData)
+        : addFocusEvent(varData);
     }
   } else if (document.getElementById("error-message") !== null) {
     const errorMessage = document.getElementById("error-message");
