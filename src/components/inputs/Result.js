@@ -36,6 +36,7 @@ export const Result = (props) => {
           tooltip.textContent = data[varName];
         }
       });
+
       el.addEventListener("focusout", () => {
         const tooltip = findTooltip(el);
         tooltip.classList.remove("active-tooltip");
