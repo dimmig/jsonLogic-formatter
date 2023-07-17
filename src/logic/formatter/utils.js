@@ -36,7 +36,7 @@ export function isOrCondition(value) {
 
 function createTooltip(name) {
   const data = JSON.parse(sessionStorage.getItem("data"));
-  return `<span class="tooltip">${JSON.parse(data)[name]}</span>`;
+  return `<span class="tooltip inner-tooltip">${JSON.parse(data)[name]}</span>`;
 }
 
 function createItems(vars) {
@@ -44,7 +44,7 @@ function createItems(vars) {
     if (typeof item === "number") {
       return item;
     } else {
-      return `{"var":<span class="var-name" id="var-data">"${item}"</span>}`;
+      return `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>"${item}"</span>}`;
     }
   });
 }
@@ -64,20 +64,20 @@ function createResponsiveItem(obj, status, lastBrace = false) {
 
     const braces = lastBrace ? "]}]}" : "]}]},";
 
-    const firstVar = `{"var":<span class="var-name" id="var-data">${JSON.stringify(
+    const firstVar = `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>${JSON.stringify(
       obj[0].var
     )}</span>}`;
 
     if (typeof Object.values(obj[1])[0][0] !== "object") {
       return `<span class="${status}">[${firstVar},${data.join(",")}${
         lastBrace ? "]}" : "]},"
-      } <span class="tooltip" id="tooltip"></span></span>\n`;
+      } </span>\n`;
     }
     data = "[" + data.join(",") + braces;
 
     return `<span class="${status}">[${firstVar},{${JSON.stringify(
       Object.keys(obj[1])[0]
-    )}:${data} <span class="tooltip" id="tooltip"></span></span>\n`;
+    )}:${data}</span>\n`;
   } else if (typeof obj[0] === "object" && typeof obj[1] !== "object") {
     if (Array.isArray(Object.values(obj[0])[0])) {
       for (const innerObj of Object.values(obj[0])[0]) {
@@ -87,9 +87,7 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       const key = Object.keys(obj[0])[0];
       return `[{"${key}":<span class="${status}">[${data.join(",")}]},${
         obj[1]
-      }${
-        lastBrace ? "]}" : "]},"
-      }<span class="tooltip" id="tooltip"></span></span>\n`;
+      }${lastBrace ? "]}" : "]},"}</span>\n`;
     }
   }
   return `<span class="${status}">[{"var":"<span class="var-name">${
@@ -181,7 +179,7 @@ export function goThroughInterface(
               continue;
             }
 
-            result += createResponsiveItem(objItem, "red", true); 
+            result += createResponsiveItem(objItem, "red", true);
           }
           nesting--;
         } else {

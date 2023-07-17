@@ -99,16 +99,24 @@ pre {
   font-size: 20px;
   color: #fff;
 }
-
+.var-name {
+  position: relative;
+}
 .tooltip {
   position: absolute;
   height: max-content;
   width: max-content;
-  background-color: #afa3a3;
+  background-color: #e65c00;
   color: #fff;
   padding: 0 5px;
   display: none;
-  margin-left: .5rem;
+}
+
+.inner-tooltip {
+  left: 0;
+  right: 0;
+  bottom: 1.5rem;
+  margin: auto;
 }
 
 .var-name:hover + .tooltip {
@@ -126,10 +134,12 @@ pre {
 
 .green {
   color: green;
+  position: relative;
 }
 
 .red {
   color: red;
+  position: relative;
 }
 
 .default {
@@ -149,6 +159,12 @@ pre {
 .red-border {
   border: 1px solid rgb(250, 43, 43);
   box-shadow: 0 0 5px rgb(250, 43, 43);
+}
+
+.buttons-wrapper {
+  display: flex;
+  width: 90vw;
+  flex-direction: row;
 }
 
 @media (max-width: 1023px) {
