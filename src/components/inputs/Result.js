@@ -27,19 +27,20 @@ export const Result = (props) => {
 
   function addFocusEvent(data) {
     data.forEach((el) => {
-      el.addEventListener("focus", () => {
+      el.addEventListener("touchstart", () => {
         const data = JSON.parse(JSON.parse(sessionStorage.getItem("data")));
         const varName = el.textContent.split('"')[1];
         if (data !== null) {
           const tooltip = findTooltip(el);
           tooltip.classList.add("active-tooltip");
+          tooltip.classList.add("tooltip-mobile-color")
           tooltip.textContent = data[varName];
         }
       });
-
-      el.addEventListener("focusout", () => {
+      el.addEventListener("touchend", () => {
         const tooltip = findTooltip(el);
         tooltip.classList.remove("active-tooltip");
+        tooltip.classList.remove("tooltip-mobile-color")
       });
     });
   }
