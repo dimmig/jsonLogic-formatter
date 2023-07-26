@@ -35,6 +35,7 @@ export const BookmarkMenu = () => {
       }
 
       document.getElementById("name-input").classList.add("invisible");
+      document.getElementById("name-input").classList.remove("invalid-input");
       document.getElementById("menu-circle").classList.add("active");
 
       const link = encodeUrl(rule.value, data.value, bookmarkName);
