@@ -6,39 +6,21 @@ import { Result } from "./inputs/Result";
 import { Rule } from "./inputs/Rule";
 import { BookmarkMenu } from "./BookmarkMenu";
 import { apply } from "json-logic-js";
-import { areInputsClear } from "./hepler";
+import { areInputsClear, renderDecodedUrl, scrollToBottom } from "./hepler";
 import "./styles/form.css";
 
 export const Forms = () => {
   const [parsedJson, setParsedJson] = useState(null);
   const bottomRef = useRef(null);
 
-  function save(rule, data) {
-    sessionStorage.setItem("rule-data", JSON.stringify(rule));
-    sessionStorage.setItem("data", JSON.stringify(data));
-  }
-
-  function isSaved() {
-    return (
-      sessionStorage.getItem("rule-data") !== null &&
-      sessionStorage.getItem("data") !== null
-    );
-  }
-
   useEffect(() => {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("rule") && url.searchParams.get("data")) {
-      const decodedRule = atob(url.searchParams.get("rule"));
-      const decodedData = atob(url.searchParams.get("data"));
-
-      save(decodedRule, decodedData);
-
-      document.getElementById("rule-textarea").value = decodedRule;
-      document.getElementById("data-textarea").value = decodedData;
-
-      if (document.getElementById("validation-button") !== null && isSaved()) {
-        document.getElementById("validation-button").click();
-      }
+    if (window.location.href.includes("bookmarkName")) {
+      const url = new URL(window.location.href);
+      document.title = url.searchParams.get("bookmarkName");
+    }
+    if (renderDecodedUrl()) {
+      document.getElementById("buttons").classList.add("buttons-custom");
+      document.getElementById("url-button").classList.add("invisible");
     }
   }, []);
 
@@ -58,26 +40,14 @@ export const Forms = () => {
     return apply(JSON.parse(rule), JSON.parse(data));
   }
 
-  function scrollToBottom() {
-    if (bottomRef.current) {
-      setTimeout(() => {
-        bottomRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "end",
-        });
-      }, 0);
-    }
-  }
-
   return (
     <div className="app" id="app" ref={bottomRef}>
       <div className="form">
         <Rule />
-
         <Data />
       </div>
       <div className="buttons-wrapper">
-        <div className="buttons">
+        <div className="buttons" id="buttons">
           <button
             className="default-button"
             id="validation-button"
@@ -94,7 +64,7 @@ export const Forms = () => {
                     null
                   )
                 );
-                scrollToBottom();
+                scrollToBottom(bottomRef, true);
                 return;
               }
               setParsedJson(
@@ -137,7 +107,7 @@ export const Forms = () => {
                     .classList.add("red-border");
                 }
 
-                scrollToBottom();
+                scrollToBottom(bottomRef, true);
               }
             }}
           >
@@ -154,7 +124,7 @@ export const Forms = () => {
                     null
                   )
                 );
-                scrollToBottom();
+                scrollToBottom(bottomRef, true);
                 return;
               }
               setParsedJson(
@@ -164,13 +134,18 @@ export const Forms = () => {
                 )
               );
 
-              scrollToBottom();
+              scrollToBottom(bottomRef, true);
             }}
           >
             Format
           </button>
         </div>
-        <BookmarkMenu />
+        {new URL(window.location.href).searchParams.get("rule") === null ||
+        new URL(window.location.href).searchParams.get("data") === null ? (
+          <BookmarkMenu />
+        ) : (
+          <></>
+        )}
       </div>
 
       <div id="result">

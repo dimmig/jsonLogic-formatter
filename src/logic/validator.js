@@ -3,6 +3,13 @@ export function validate(jsonLogicString, data) {
     return null;
   }
 
+  try {
+    JSON.parse(jsonLogicString);
+    JSON.parse(data);
+  } catch (e) {
+    return null;
+  }
+
   const parsedJson = JSON.parse(jsonLogicString);
   const parsedData = JSON.parse(data);
 

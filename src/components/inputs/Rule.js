@@ -1,5 +1,5 @@
 import React from "react";
-import { isValidRule } from "../hepler";
+import { isValid } from "../hepler";
 import { EXAMPLE_DATA, EXAMPLE_RULE } from "../../logic/constants";
 import "../styles/inputs.css";
 
@@ -18,6 +18,16 @@ export const Rule = () => {
           onClick={() => {
             document.getElementById("rule-textarea").value = EXAMPLE_RULE;
             document.getElementById("data-textarea").value = EXAMPLE_DATA;
+
+            if (!window.location.href.includes("bookmarkName")) {
+              document
+                .getElementById("bookmark-button")
+                .classList.remove("disabled");
+              document
+                .getElementById("url-button")
+                .classList.remove("disabled");
+            }
+
             save(EXAMPLE_RULE, EXAMPLE_DATA);
           }}
         >
@@ -29,7 +39,7 @@ export const Rule = () => {
         placeholder="Type your rule here"
         className="textarea"
         id="rule-textarea"
-        onChange={(e) => isValidRule(e.target.value)}
+        onChange={(e) => isValid("rule-data", e.target.value)}
       />
     </div>
   );

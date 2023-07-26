@@ -3,14 +3,71 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  padding: 1rem 0;
+  width: max-content;
 }
 
 .bookmark-list {
   position: relative;
+  height: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.bookmark-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-input {
+  width: 7.5rem;
+  height: 3rem;
+  position: absolute;
+  outline: none;
+  border: 1px solid #fac585;
+  font-weight: 200;
+  font-family: "Open Sans";
+  font-size: 1.3rem;
+}
+
+.name-input:focus {
+  outline: none;
+  border: 1px solid #fac585;
+  box-shadow: 0 0 10px #fac585;
+  transition: all 0.1s ease;
+}
+
+.name-input::placeholder {
+  font-size: 0.75rem;
+}
+
+.bookmark-btn:hover {
+  cursor: pointer;
+}
+
+.disabled {
+  background-color: #fff;
+  color: #c8c8c8;
+  border: 1px solid #c8c8c8;
+}
+
+.disabled:hover {
+  background-color: #fff;
+  color: #c8c8c8;
+  cursor: auto;
+}
+
+.invalid-input:focus {
+  border: 1px solid #c43030;
+  box-shadow: 0 0 10px #c43030;
+}
+
+.filled {
+  background-color: #fac585;
+  border: 1px solid #fac585;
+  color: #fff;
 }
 
 .menu-circle {
@@ -38,16 +95,76 @@
 }
 
 .list {
+  top: 4rem;
+  margin-right: 4rem;
   position: absolute;
-  top: 4.5rem;
-  padding: 0;
+  padding: 5% 10%;
   list-style: none;
-  background-color: #f1f1f1;
-  border-radius: 0.1rem;
+  border-radius: 10%;
+  background-color: #f3f3f3;
+  z-index: 2;
 }
 
 .list li {
+  width: 10rem;
   font-family: "Open Sans";
-  font-size: 1rem;
+  background-color: #f9f9f9;
+  color: #000;
+  margin-bottom: 0.5rem;
   font-weight: 200;
+  text-align: center;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.5rem;
+  display: inline-block;
+}
+
+.list li:hover {
+  text-decoration: underline;
+  text-decoration-color: #fff;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.li-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.bin-icon {
+  font-size: 1.3rem;
+}
+
+.bin-icon:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.active {
+  background-color: #c47530;
+  opacity: 0.8;
+}
+
+.bookmark-error {
+  position: absolute;
+  top: 4.5rem;
+  width: max-content;
+  height: max-content;
+  opacity: 1;
+}
+
+.scrollable {
+  overflow-y: scroll;
+  height: 12.5rem;
 }

@@ -1,29 +1,20 @@
 import React, { useState } from "react";
-import { isValidData } from "../hepler";
+import { encodeUrl, isValid } from "../hepler";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { areInputsClear } from "../hepler";
 import "../styles/inputs.css";
 import "../styles/form.css";
+import "../styles/bookmark.css";
 
 export const Data = () => {
   const [copied, setCopied] = useState(null);
-
-  function filterData(rule, data) {
-    const result = {};
-    for (const key of Object.keys(JSON.parse(data))) {
-      if (rule.includes(key)) {
-        result[key] = JSON.parse(data)[key];
-      }
-    }
-    return result;
-  }
 
   return (
     <div>
       <div className="rule-button-block">
         <h2 className="heading">Data</h2>
         <button
-          className="default-button url-button"
+          className="default-button url-button disabled"
           id="url-button"
           onClick={() => {
             if (
@@ -31,14 +22,7 @@ export const Data = () => {
               sessionStorage.getItem("data") !== null &&
               !areInputsClear()
             ) {
-              const url = new URL(window.location.href);
-              const rule = JSON.parse(sessionStorage.getItem("rule-data"));
-              const data = JSON.parse(sessionStorage.getItem("data"));
-
-              const filtredData = filterData(rule, data);
-
-              url.searchParams.set("rule", btoa(rule));
-              url.searchParams.set("data", btoa(JSON.stringify(filtredData)));
+              const url = encodeUrl();
 
               navigator.clipboard.writeText(url);
               document.getElementById("url-button").classList.add("completed");
@@ -70,7 +54,7 @@ export const Data = () => {
         placeholder="Type your data here"
         className="textarea"
         id="data-textarea"
-        onChange={(e) => isValidData(e.target.value)}
+        onChange={(e) => isValid("data", e.target.value)}
       />
     </div>
   );
