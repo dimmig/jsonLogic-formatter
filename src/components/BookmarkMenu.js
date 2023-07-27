@@ -13,7 +13,6 @@ export const BookmarkMenu = () => {
   const errorRef = useRef(null);
   const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
   const [bookmarkName, setBookmarkName] = useState(null);
-  const [showList, setShowList] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
@@ -34,6 +33,7 @@ export const BookmarkMenu = () => {
         document.getElementById("bookmark-error").classList.add("invisible");
       }
 
+      document.getElementById("bookmark-button").classList.remove("invisible");
       document.getElementById("name-input").classList.add("invisible");
       document.getElementById("name-input").classList.remove("invalid-input");
       document.getElementById("menu-circle").classList.add("active");
@@ -41,10 +41,6 @@ export const BookmarkMenu = () => {
       const link = encodeUrl(rule.value, data.value, bookmarkName);
       const updatedBookmarks = [{ [bookmarkName]: link }, ...stateBookmarks];
       setStateBookmarks(updatedBookmarks);
-
-      if (!showList) {
-        setShowList(true);
-      }
     }
   }
 
@@ -158,6 +154,9 @@ export const BookmarkMenu = () => {
             onClick={() => {
               if (areInputsFilled()) {
                 document
+                  .getElementById("bookmark-button")
+                  .classList.add("invisible");
+                document
                   .getElementById("name-input")
                   .classList.toggle("invisible");
                 document.getElementById("name-input").value = "";
@@ -175,12 +174,16 @@ export const BookmarkMenu = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 const list = document.getElementById("list");
+                const result = document.getElementById("result-area");
                 e.preventDefault();
                 addBookmark();
 
                 if (list.classList.contains("invisible")) {
                   list.classList.remove("invisible");
-                  scrollToBottom(listRef);
+
+                  if (result.classList.contains("invisible")) {
+                    scrollToBottom(listRef);
+                  }
                 }
               }
             }}

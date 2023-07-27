@@ -106,9 +106,8 @@ export const Forms = () => {
                     .getElementById("result-p")
                     .classList.add("red-border");
                 }
-
-                scrollToBottom(bottomRef, true);
               }
+              scrollToBottom(bottomRef, true);
             }}
           >
             Validate

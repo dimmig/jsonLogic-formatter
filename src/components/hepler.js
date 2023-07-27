@@ -97,10 +97,10 @@ export const scrollToBottom = (ref, needAnimation) => {
         needAnimation
           ? {
               behavior: "smooth",
-              block: "end",
+              block: "center",
             }
           : {
-              block: "end",
+              block: "center",
             }
       );
     }, 0);
