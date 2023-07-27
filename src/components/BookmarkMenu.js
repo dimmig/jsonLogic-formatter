@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { areInputsFilled, encodeUrl, scrollToBottom } from "./hepler";
 import { AiOutlineMenu } from "react-icons/ai";
 import { ImBin } from "react-icons/im";
+import { BiSolidEditAlt } from "react-icons/bi";
+import { MdCancel } from "react-icons/md";
 import "./styles/inputs.css";
 import "./styles/bookmark.css";
 
@@ -11,8 +13,10 @@ export const BookmarkMenu = () => {
   const listRef = useRef(null);
   const menuRef = useRef(null);
   const errorRef = useRef(null);
+  const cancelInput = useRef(null);
   const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
   const [bookmarkName, setBookmarkName] = useState(null);
+  const [editedName, setEditedName] = useState(null);
 
   useEffect(() => {
     localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
@@ -42,6 +46,32 @@ export const BookmarkMenu = () => {
       const updatedBookmarks = [{ [bookmarkName]: link }, ...stateBookmarks];
       setStateBookmarks(updatedBookmarks);
     }
+  }
+
+  function editBookmark(id) {
+    const target = stateBookmarks.filter((el) => Object.keys(el)[0] === id);
+    const index = stateBookmarks.indexOf(target[0]);
+    const result = [...stateBookmarks];
+    const obj = {};
+    const url = Object.values(target[0])[0];
+    url.searchParams.set("bookmarkName", editedName);
+    obj[editedName] = url;
+    result.splice(index, 1, obj);
+    setStateBookmarks(result);
+    showEditInput(id, false);
+  }
+
+  function showEditInput(id, needToShow) {
+    if (needToShow) {
+      document.getElementById(id).classList.add("invisible");
+      document.getElementById(`cancel_${id}`).classList.remove("invisible");
+      document.getElementById(`input_${id}`).classList.remove("invisible");
+    } else {
+      document.getElementById(id).classList.remove("invisible");
+      document.getElementById(`cancel_${id}`).classList.add("invisible");
+      document.getElementById(`input_${id}`).classList.add("invisible");
+    }
+    scrollToBottom(cancelInput, false);
   }
 
   function deleteBookmark(id) {
@@ -105,15 +135,44 @@ export const BookmarkMenu = () => {
       const name = Object.keys(el)[0];
       const link = Object.values(el)[0];
 
+      const inputId = `input_${name}`;
+      const cancelId = `cancel_${name}`;
+
       if (name.length === 0) {
         return null;
       }
       return (
-        <div className="li-block" key={name} title={name}>
+        <div className="li-block" key={name} ref={cancelInput}>
           <a target="_blank" rel="noreferrer" href={link}>
-            <li>{name}</li>
+            <li id={name} title={name}>
+              {name}
+            </li>
           </a>
-          <ImBin className="bin-icon" onClick={() => deleteBookmark(name)} />
+          <MdCancel
+            className="icon invisible"
+            id={cancelId}
+            onClick={() => {
+              document.getElementById(inputId).classList.add("invisible");
+              document.getElementById(cancelId).classList.add("invisible");
+              document.getElementById(name).classList.remove("invisible");
+            }}
+          />
+          <input
+            className="name-input edit-input invisible"
+            id={inputId}
+            onChange={(e) => setEditedName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                editBookmark(name);
+              }
+            }}
+          />
+
+          <ImBin className="icon" onClick={() => deleteBookmark(name)} />
+          <BiSolidEditAlt
+            className="icon"
+            onClick={() => showEditInput(name, true)}
+          />
         </div>
       );
     });
@@ -173,6 +232,12 @@ export const BookmarkMenu = () => {
             onChange={(e) => setBookmarkName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                if (document.getElementById("name-input").value.length === 0) {
+                  return document
+                    .getElementById("name-input")
+                    .classList.add("invalid-input");
+                }
+
                 const list = document.getElementById("list");
                 const result = document.getElementById("result-area");
                 e.preventDefault();
