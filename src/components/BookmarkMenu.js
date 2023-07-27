@@ -160,9 +160,21 @@ export const BookmarkMenu = () => {
           <input
             className="name-input edit-input invisible"
             id={inputId}
+            placeholder="Type your new name"
             onChange={(e) => setEditedName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                const duplicate = stateBookmarks.filter(
+                  (el) => Object.keys(el)[0] === editedName
+                );
+                if (duplicate.length !== 0) {
+                  return document
+                    .getElementById(inputId)
+                    .classList.add("invalid-input");
+                }
+                document
+                  .getElementById(inputId)
+                  .classList.remove("invalid-input");
                 editBookmark(name);
               }
             }}
