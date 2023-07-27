@@ -50,13 +50,3 @@ body  {
     font-size: 1rem;
   }
 }
-
-/* Tablet styles */
-@media (min-width: 768px) and (max-width: 1023px) {
-  /* Apply styles for tablets */
-}
-
-/* Desktop styles */
-@media (min-width: 1024px) {
-  /* Apply styles for desktops */
-}

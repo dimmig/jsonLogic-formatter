@@ -43,19 +43,35 @@ export const BookmarkMenu = () => {
       document.getElementById("menu-circle").classList.add("active");
 
       const link = encodeUrl(rule.value, data.value, bookmarkName);
-      const updatedBookmarks = [{ [bookmarkName]: link }, ...stateBookmarks];
+      const updatedBookmarks = [
+        {
+          [bookmarkName]: link,
+          creationDate: new Date().toLocaleTimeString(),
+        },
+        ...stateBookmarks,
+      ];
       setStateBookmarks(updatedBookmarks);
     }
   }
 
   function editBookmark(id) {
-    const target = stateBookmarks.filter((el) => Object.keys(el)[0] === id);
+    const target = stateBookmarks.filter((el) => {
+      for (const key of Object.keys(el)) {
+        if (key === id) {
+          break;
+        }
+      }
+      return el;
+    });
+
     const index = stateBookmarks.indexOf(target[0]);
     const result = [...stateBookmarks];
-    const obj = {};
-    const url = Object.values(target[0])[0];
+    const url = new URL(Object.values(target[0])[0]);
     url.searchParams.set("bookmarkName", editedName);
+    const obj = {};
     obj[editedName] = url;
+    obj.creationDate = Object.values(target[0])[1];
+    obj.editedDate = new Date().toLocaleTimeString();
     result.splice(index, 1, obj);
     setStateBookmarks(result);
     showEditInput(id, false);
@@ -134,6 +150,7 @@ export const BookmarkMenu = () => {
     return stateBookmarks.map((el) => {
       const name = Object.keys(el)[0];
       const link = Object.values(el)[0];
+      const time = Object.values(el)[1];
 
       const inputId = `input_${name}`;
       const cancelId = `cancel_${name}`;
@@ -143,6 +160,15 @@ export const BookmarkMenu = () => {
       }
       return (
         <div className="li-block" key={name} ref={cancelInput}>
+          <div className="creation-time">
+            {Object.keys(el).includes("editedDate") ? (
+              <span>
+                {Object.values(el)[2]} <p className="edited-text">(edited)</p>
+              </span>
+            ) : (
+              time
+            )}
+          </div>
           <a target="_blank" rel="noreferrer" href={link}>
             <li id={name} title={name}>
               {name}
@@ -167,7 +193,11 @@ export const BookmarkMenu = () => {
                 const duplicate = stateBookmarks.filter(
                   (el) => Object.keys(el)[0] === editedName
                 );
-                if (duplicate.length !== 0) {
+                if (
+                  duplicate.length !== 0 ||
+                  editedName === "creationDate" ||
+                  editedName === "editedDate"
+                ) {
                   return document
                     .getElementById(inputId)
                     .classList.add("invalid-input");
@@ -244,7 +274,11 @@ export const BookmarkMenu = () => {
             onChange={(e) => setBookmarkName(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                if (document.getElementById("name-input").value.length === 0) {
+                if (
+                  document.getElementById("name-input").value.length === 0 ||
+                  bookmarkName === "creationDate" ||
+                  bookmarkName === "editedDate"
+                ) {
                   return document
                     .getElementById("name-input")
                     .classList.add("invalid-input");

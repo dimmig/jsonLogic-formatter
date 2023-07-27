@@ -42,10 +42,32 @@
   font-size: 0.75rem;
 }
 
+.creation-time {
+  font-family: "Open sans";
+  font-weight: 400;
+  font-size: 0.8rem;
+  margin: 0.5rem 0;
+}
+
+.edited-text {
+  margin: 0;
+  color: #000;
+  font-weight: 200;
+}
+
 .edit-input {
   margin: 1rem;
-  height: 2rem;
+  height: 2.5rem;
   font-size: 1rem;
+  width: 8rem;
+  border: 1px solid #9b9a9a;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.edit-input:focus {
+  border: 1px solid #9b9a9a;
+  box-shadow: 0 0 10px #9b9a9a;
 }
 
 .bookmark-btn:hover {
@@ -149,6 +171,7 @@
 
 .icon {
   font-size: 1.3rem;
+  color: #9b9a9a;
 }
 
 .icon:hover {
@@ -172,4 +195,16 @@
 .scrollable {
   overflow-y: scroll;
   height: 12.5rem;
+}
+
+@media (max-width: 768px) {
+  .list li {
+    font-size: 1rem;
+    width: 5rem;
+  }
+
+  .creation-time {
+    font-size: 0.7rem;
+    margin: 0.3rem 0;
+  }
 }
