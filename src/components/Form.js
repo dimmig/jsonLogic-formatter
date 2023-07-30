@@ -4,7 +4,7 @@ import { validate } from "../logic/validator";
 import { Data } from "./inputs/Data";
 import { Result } from "./inputs/Result";
 import { Rule } from "./inputs/Rule";
-import { BookmarkMenu } from "./BookmarkMenu";
+import { BookmarkMenu } from "./bookmarks/BookmarkMenu";
 import { apply } from "json-logic-js";
 import { areInputsClear, renderDecodedUrl, scrollToBottom } from "./hepler";
 import "./styles/form.css";
@@ -19,8 +19,8 @@ export const Forms = () => {
       document.title = url.searchParams.get("bookmarkName");
     }
     if (renderDecodedUrl()) {
-      document.getElementById("buttons").classList.add("buttons-custom");
-      document.getElementById("url-button").classList.add("invisible");
+      document.getElementById("url-button").classList.remove("disabled");
+      document.getElementById("bookmark-button").classList.remove("disabled");
     }
   }, []);
 
@@ -42,6 +42,7 @@ export const Forms = () => {
 
   return (
     <div className="app" id="app" ref={bottomRef}>
+      <BookmarkMenu />
       <div className="form">
         <Rule />
         <Data />
@@ -139,12 +140,6 @@ export const Forms = () => {
             Format
           </button>
         </div>
-        {new URL(window.location.href).searchParams.get("rule") === null ||
-        new URL(window.location.href).searchParams.get("data") === null ? (
-          <BookmarkMenu />
-        ) : (
-          <></>
-        )}
       </div>
 
       <div id="result">

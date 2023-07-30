@@ -3,26 +3,48 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  padding: 1rem 0;
+  width: max-content;
+  transition: all 0.2s ease;
+}
+
+.bookmark-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 90vw;
+  margin-top: 2rem;
+}
+
+.name-input-wrapper {
   width: max-content;
 }
 
-.bookmark-list {
-  position: relative;
-  height: max-content;
+.completed {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  border: none;
+  gap: 2rem;
 }
 
-.bookmark-input {
-  display: flex;
-  flex-direction: column;
+.completed-button {
+  background-color: rgb(83, 217, 30);
+  width: max-content;
+  border: 1px solid #fff;
+  padding: none;
+}
+
+.completed-button:hover {
+  background-color: rgb(83, 217, 30);
+}
+
+.completed-button:active {
+  background-color: rgb(83, 217, 30);
+  opacity: 1;
 }
 
 .name-input {
-  width: 7.3rem;
+  width: 8rem;
   height: 3rem;
   outline: none;
   border: 1px solid #fac585;
@@ -42,21 +64,20 @@
   font-size: 0.75rem;
 }
 
-.creation-time {
-  font-family: "Open sans";
-  font-weight: 400;
-  font-size: 0.8rem;
-  margin: 0.5rem 0;
-}
-
-.edited-text {
-  margin: 0;
-  color: #000;
+.item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: max-content;
+  font-family: "Open Sans";
+  background-color: #fac585;
+  border: 1px solid #fff;
   font-weight: 200;
+  text-align: center;
+  padding: 0 1rem;
 }
 
 .edit-input {
-  margin: 1rem;
   height: 2.5rem;
   font-size: 1rem;
   width: 8rem;
@@ -72,6 +93,22 @@
 
 .bookmark-btn:hover {
   cursor: pointer;
+}
+
+.add-bookmark-button {
+  margin-left: 1rem;
+  padding: 0 1rem;
+}
+
+.edit-button {
+  height: 2rem;
+  margin-left: 1rem;
+  border: 1px solid #9b9a9a;
+  color: #9b9a9a;
+}
+
+.edit-button:hover {
+  background-color: #9b9a9a;
 }
 
 .disabled {
@@ -121,27 +158,43 @@
   font-size: 24px;
 }
 
+.bookmark-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 75vw;
+}
+
+.bookmark-heading {
+  margin: 0;
+}
+
 .list {
-  top: 4rem;
-  margin-right: 4rem;
-  position: absolute;
-  padding: 5% 10%;
+  margin: 0 2rem;
   list-style: none;
-  border-radius: 10%;
-  background-color: #f3f3f3;
+  background-color: #fff;
   z-index: 2;
+  align-items: center;
+  padding-left: 0;
+  display: flex;
+  flex-direction: row;
+  height: 5rem;
+  gap: 1rem;
+}
+
+.invisible-list {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .list li {
-  width: 10rem;
   font-family: "Open Sans";
-  background-color: #f9f9f9;
-  color: #000;
-  margin-bottom: 0.5rem;
+  color: #fff;
   font-weight: 200;
   text-align: center;
-  border-radius: 0.5rem;
   padding: 0 1rem;
+  width: 8rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -151,13 +204,12 @@
   text-decoration: none;
   color: #fff;
   font-size: 1.5rem;
-  display: inline-block;
 }
 
-.list li:hover {
+.item:hover {
   text-decoration: underline;
   text-decoration-color: #fff;
-  background-color: #fff;
+  opacity: 0.8;
   cursor: pointer;
 }
 
@@ -165,13 +217,17 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  width: max-content;
 }
 
 .icon {
   font-size: 1.3rem;
-  color: #9b9a9a;
+  color: #fff;
+}
+
+.cancel-icon {
+  padding: 0 1rem;
+  color: #979797;
 }
 
 .icon:hover {
@@ -193,14 +249,82 @@
 }
 
 .scrollable {
-  overflow-y: scroll;
-  height: 12.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: #ffdcaf rgba(243, 243, 243, 0.192);
+  margin-right: 0;
+  overflow: hidden;
+}
+
+.scrollable:hover {
+  overflow-x: scroll;
+}
+
+@media (max-width: 1024px) {
+  .item {
+    width: max-content;
+  }
+  .li {
+    width: max-content;
+  }
+
+  .scrollable:hover {
+    overflow-y: scroll;
+  }
+
+  .bookmark-block {
+    width: 70vw;
+  }
 }
 
 @media (max-width: 768px) {
   .list li {
     font-size: 1rem;
     width: 5rem;
+  }
+
+  .bookmark-block {
+    flex-direction: column;
+  }
+
+  .bookmark-wrapper {
+    flex-direction: column;
+  }
+
+  .completed-button {
+    margin-right: 2rem;
+  }
+
+  .bookmark-input {
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+  }
+
+  .list {
+    flex-direction: column;
+    padding: 0 1rem;
+    margin: 0;
+    height: 7rem;
+    width: max-content;
+  }
+
+  .mobile-scrollable {
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
+  .icon {
+    padding: 0.5rem;
+  }
+
+  .list li {
+    padding: 0.5rem;
+    width: 40vw;
+    font-size: 1.4rem;
+  }
+
+  .bookmark-heading {
+    margin-bottom: 1rem;
   }
 
   .creation-time {
