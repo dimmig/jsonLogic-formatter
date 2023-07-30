@@ -251,7 +251,6 @@
 .scrollable {
   scrollbar-width: thin;
   scrollbar-color: #ffdcaf rgba(243, 243, 243, 0.192);
-  margin-right: 0;
   overflow: hidden;
 }
 
