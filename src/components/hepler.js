@@ -90,7 +90,6 @@ export const encodeUrl = (
     if (url.searchParams.get("section")) {
       url.searchParams.delete("section");
     }
-    return url;
   }
 
   if (isFile && rule !== null) {
