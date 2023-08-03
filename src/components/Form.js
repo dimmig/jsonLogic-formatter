@@ -1,24 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { formatJSON } from "../logic/formatter/formatter";
 import { validate } from "../logic/validator";
-import { Data } from "./inputs/Data";
-import { Result } from "./inputs/Result";
-import { Rule } from "./inputs/Rule";
-import { BookmarkMenu } from "./bookmarks/BookmarkMenu";
+import { Data } from "./subcomponents/Data";
+import { Rule } from "./subcomponents/Rule";
 import { apply } from "json-logic-js";
-import { areInputsClear, renderDecodedUrl, scrollToBottom } from "./hepler";
+import { areInputsClear, renderDecodedUrl } from "./hepler";
 import "./styles/form.css";
 
-export const Forms = () => {
-  const [parsedJson, setParsedJson] = useState(null);
-  const bottomRef = useRef(null);
-
+export const Forms = ({ setParsedJson }) => {
   useEffect(() => {
     if (window.location.href.includes("bookmarkName")) {
       const url = new URL(window.location.href);
       document.title = url.searchParams.get("bookmarkName");
-    }
-    if (renderDecodedUrl()) {
+      renderDecodedUrl();
       document.getElementById("url-button").classList.remove("disabled");
       document.getElementById("bookmark-button").classList.remove("disabled");
     }
@@ -41,8 +35,7 @@ export const Forms = () => {
   }
 
   return (
-    <div className="app" id="app" ref={bottomRef}>
-      <BookmarkMenu />
+    <div className="app" id="app">
       <div className="form">
         <Rule />
         <Data />
@@ -65,7 +58,6 @@ export const Forms = () => {
                     null
                   )
                 );
-                scrollToBottom(bottomRef, true);
                 return;
               }
               setParsedJson(
@@ -108,7 +100,6 @@ export const Forms = () => {
                     .classList.add("red-border");
                 }
               }
-              scrollToBottom(bottomRef, true);
             }}
           >
             Validate
@@ -124,7 +115,6 @@ export const Forms = () => {
                     null
                   )
                 );
-                scrollToBottom(bottomRef, true);
                 return;
               }
               setParsedJson(
@@ -133,17 +123,11 @@ export const Forms = () => {
                   false
                 )
               );
-
-              scrollToBottom(bottomRef, true);
             }}
           >
             Format
           </button>
         </div>
-      </div>
-
-      <div id="result">
-        <Result jsonData={parsedJson} />
       </div>
     </div>
   );

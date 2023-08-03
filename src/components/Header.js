@@ -30,7 +30,6 @@ export const Header = () => {
         </div>
         <div className="sub-title">
           <span className="auto-type subtext">Validate your code</span>
-          {"   "}
           <span ref={typeRef1} className="auto-type subtext colored"></span>
         </div>
       </div>

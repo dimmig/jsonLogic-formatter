@@ -2,21 +2,17 @@ export const isValid = (type, jsonStr) => {
   try {
     JSON.parse(jsonStr);
 
-    if (!window.location.href.includes("bookmarkName")) {
-      if (areInputsFilled()) {
-        document.getElementById("bookmark-button").classList.remove("disabled");
-        document.getElementById("url-button").classList.remove("disabled");
-      }
+    if (areInputsFilled()) {
+      document.getElementById("bookmark-button").classList.remove("disabled");
+      document.getElementById("url-button").classList.remove("disabled");
     }
 
     sessionStorage.setItem(type, JSON.stringify(jsonStr));
 
     return true;
   } catch (e) {
-    if (!window.location.href.includes("bookmarkName")) {
-      document.getElementById("bookmark-button").classList.add("disabled");
-      document.getElementById("url-button").classList.add("disabled");
-    }
+    document.getElementById("bookmark-button").classList.add("disabled");
+    document.getElementById("url-button").classList.add("disabled");
     sessionStorage.removeItem(type);
     return false;
   }
@@ -45,41 +41,69 @@ export const oneInputClear = () => {
 
 export const renderDecodedUrl = () => {
   const url = new URL(window.location.href);
-  if (url.searchParams.get("rule") && url.searchParams.get("data")) {
-    const decodedRule = atob(url.searchParams.get("rule"));
-    const decodedData = atob(url.searchParams.get("data"));
-
-    save(decodedRule, decodedData);
-
-    document.getElementById("rule-textarea").value = decodedRule;
-    document.getElementById("data-textarea").value = decodedData;
-
-    if (document.getElementById("validation-button") !== null && isSaved()) {
-      document.getElementById("validation-button").click();
-    }
-    return true;
+  let decodedRule;
+  let decodedData;
+  if (!url.searchParams.get("rule")) {
+    decodedRule = "";
+    decodedData = atob(url.searchParams.get("data"));
+  } else if (!url.searchParams.get("data")) {
+    decodedData = "";
+    decodedRule = atob(url.searchParams.get("rule"));
+  } else {
+    decodedRule = atob(url.searchParams.get("rule"));
+    decodedData = atob(url.searchParams.get("data"));
   }
-  return false;
+
+  save(decodedRule, decodedData);
+
+  document.getElementById("rule-textarea").value = decodedRule;
+  document.getElementById("data-textarea").value = decodedData;
+
+  if (document.getElementById("validation-button") !== null && isSaved()) {
+    document.getElementById("validation-button").click();
+  }
 };
 
-export const encodeUrl = (rule = null, data = null, bookmarkName = null) => {
+export const encodeUrl = (
+  rule = null,
+  data = null,
+  bookmarkName = null,
+  section = null,
+  isFile = false
+) => {
   const url = new URL(window.location.href);
-  if (rule === null && data === null) {
+
+  if (rule !== null && data !== null && !isFile) {
     rule = JSON.parse(sessionStorage.getItem("rule-data"));
     data = JSON.parse(sessionStorage.getItem("data"));
+    const filtredData = filterData(rule, data);
+
+    url.searchParams.set("rule", btoa(rule));
+    url.searchParams.set(
+      "data",
+      btoa(
+        typeof filtredData === "object"
+          ? JSON.stringify(filtredData)
+          : filtredData
+      )
+    );
+    if (url.searchParams.get("section")) {
+      url.searchParams.delete("section");
+    }
+    return url;
   }
 
-  const filtredData = filterData(rule, data);
+  if (isFile && rule !== null) {
+    url.searchParams.set("rule", btoa(JSON.stringify(rule)));
+  }
 
-  url.searchParams.set("rule", btoa(rule));
-  url.searchParams.set(
-    "data",
-    btoa(
-      typeof filtredData === "object"
-        ? JSON.stringify(filtredData)
-        : filtredData
-    )
-  );
+  if (isFile && data !== null) {
+    url.searchParams.set("data", btoa(JSON.stringify(data)));
+  }
+
+  if (isFile && section !== null) {
+    url.searchParams.set("section", btoa(JSON.stringify(section)));
+  }
 
   if (bookmarkName !== null) {
     url.searchParams.set("bookmarkName", bookmarkName);
@@ -97,10 +121,9 @@ export const scrollToBottom = (ref, needAnimation) => {
         needAnimation
           ? {
               behavior: "smooth",
-              block: "center",
             }
           : {
-              block: "center",
+              behavior: "auto",
             }
       );
     }, 0);

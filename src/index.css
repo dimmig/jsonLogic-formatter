@@ -10,3 +10,39 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.main-app {
+  width: 70vw;
+}
+
+.application {
+  display: flex;
+  flex-direction: row;
+}
+
+.forms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bookmarks-part {
+  width: 30vw;
+  border: 1px solid #85bafa;
+  margin-bottom: 1rem;
+}
+
+.result-block {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .bookmarks-part {
+    display: none;
+  }
+
+  .main-app {
+    width: 100vw;
+  }
+}
