@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/jsonLogic-validator/static/css/main.263d7db5.css",
-    "main.js": "/jsonLogic-validator/static/js/main.f0d2b4fc.js",
+    "main.js": "/jsonLogic-validator/static/js/main.75cbb5cc.js",
     "static/js/787.d7679f61.chunk.js": "/jsonLogic-validator/static/js/787.d7679f61.chunk.js",
     "index.html": "/jsonLogic-validator/index.html",
     "main.263d7db5.css.map": "/jsonLogic-validator/static/css/main.263d7db5.css.map",
-    "main.f0d2b4fc.js.map": "/jsonLogic-validator/static/js/main.f0d2b4fc.js.map",
+    "main.75cbb5cc.js.map": "/jsonLogic-validator/static/js/main.75cbb5cc.js.map",
     "787.d7679f61.chunk.js.map": "/jsonLogic-validator/static/js/787.d7679f61.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.263d7db5.css",
-    "static/js/main.f0d2b4fc.js"
+    "static/js/main.75cbb5cc.js"
   ]
 }
