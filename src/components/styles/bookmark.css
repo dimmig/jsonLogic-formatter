@@ -172,6 +172,30 @@
   gap: 1rem;
 }
 
+.list-length-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.length-bookmarks-block {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1rem;
+  margin-right: 2rem;
+  gap: 0.5rem;
+}
+
+.bookmarks-length {
+  margin: 0;
+  color: #54a1ff;
+}
+
+.bookmarks-length-text {
+  color: #6d6d6d;
+  margin: 0;
+}
+
 .invisible-list {
   display: none;
   width: 0;

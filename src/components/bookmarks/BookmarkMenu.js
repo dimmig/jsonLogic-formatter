@@ -447,9 +447,15 @@ export const BookmarkMenu = () => {
           <h2>No bookmarks</h2>
         </div>
         {stateBookmarks.length !== 0 ? (
-          <ul className="list scrollable" id="list" ref={listRef}>
-            {renderList()}
-          </ul>
+          <div className="list-length-block">
+            <span className="length-bookmarks-block" id="bookmarks-length">
+              <p className="bookmarks-length-text">Bookmarks:</p>
+              <p className="bookmarks-length">{stateBookmarks.length}</p>
+            </span>
+            <ul className="list scrollable" id="list" ref={listRef}>
+              {renderList()}
+            </ul>
+          </div>
         ) : (
           <ul className="invisible-list" id="list" ref={listRef}></ul>
         )}
