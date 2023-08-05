@@ -106,8 +106,6 @@ export const encodeUrl = (
 
   if (bookmarkName !== null) {
     url.searchParams.set("bookmarkName", bookmarkName);
-  } else {
-    url.searchParams.delete("bookmarkName");
   }
 
   return url;

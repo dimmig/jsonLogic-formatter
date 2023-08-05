@@ -17,12 +17,18 @@ export const Data = () => {
           className="default-button url-button disabled"
           id="url-button"
           onClick={() => {
-            if (
-              sessionStorage.getItem("rule-data") !== null &&
-              sessionStorage.getItem("data") !== null &&
-              !areInputsClear()
-            ) {
-              const url = encodeUrl();
+            const rule = sessionStorage.getItem("rule-data");
+            const data = sessionStorage.getItem("data");
+            const bookmarkName = new URL(window.location.href).searchParams.get(
+              "bookmarkName"
+            );
+            let url;
+            if (rule !== null && data !== null && !areInputsClear()) {
+              if (bookmarkName) {
+                url = encodeUrl(rule, data, bookmarkName);
+              } else {
+                url = encodeUrl(rule, data);
+              }
 
               navigator.clipboard.writeText(url);
               document.getElementById("url-button").classList.add("completed");

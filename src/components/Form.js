@@ -9,9 +9,15 @@ import "./styles/form.css";
 
 export const Forms = ({ setParsedJson }) => {
   useEffect(() => {
-    if (window.location.href.includes("bookmarkName")) {
+    if (
+      window.location.href.includes("rule") ||
+      window.location.href.includes("data")
+    ) {
       const url = new URL(window.location.href);
-      document.title = url.searchParams.get("bookmarkName");
+      if (window.location.href.includes("bookmarkName")) {
+        document.title = url.searchParams.get("bookmarkName");
+      }
+
       renderDecodedUrl();
       document.getElementById("url-button").classList.remove("disabled");
       document.getElementById("bookmark-button").classList.remove("disabled");

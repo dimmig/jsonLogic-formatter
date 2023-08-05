@@ -142,6 +142,10 @@ export function editBookmark(id, stateBookmarks, editedData) {
 }
 
 export function showSearchInput(needToShow, state) {
+  if (document.getElementById("list").classList.contains("invisible-list")) {
+    return;
+  }
+
   if (needToShow) {
     localStorage.setItem("bookmarks-before-search", JSON.stringify(state));
 
@@ -152,7 +156,7 @@ export function showSearchInput(needToShow, state) {
     document.getElementById("search-cancel").classList.remove("invisible");
     document.getElementById("export-button").classList.add("invisible");
     document.getElementById("clear-all-button").classList.add("invisible");
-    document.getElementById("bookmarks-length").classList.add("invisible")
+    document.getElementById("bookmarks-length").classList.add("invisible");
   } else {
     document.getElementById("bookmark-button").classList.remove("invisible");
     document.getElementById("file-input").classList.remove("invisible");
@@ -162,8 +166,7 @@ export function showSearchInput(needToShow, state) {
     document.getElementById("search-icon").classList.remove("invisible");
     document.getElementById("export-button").classList.remove("invisible");
     document.getElementById("clear-all-button").classList.remove("invisible");
-    document.getElementById("bookmarks-length").classList.remove("invisible")
-
+    document.getElementById("bookmarks-length").classList.remove("invisible");
 
     return JSON.parse(localStorage.getItem("bookmarks-before-search")) || [];
   }
