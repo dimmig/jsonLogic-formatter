@@ -13,8 +13,8 @@ import {
   removeNameInput,
   showEditInput,
   showSearchInput,
+  toggleAddingBookmark,
 } from "./bookmarksHelper";
-import { areInputsFilled } from "../hepler";
 import { FileInput } from "../subcomponents/FileInput";
 import "../styles/inputs.css";
 import "../styles/bookmark.css";
@@ -254,36 +254,7 @@ export const BookmarkMenu = () => {
                 <button
                   className="bookmark-btn disabled"
                   id="bookmark-button"
-                  onClick={() => {
-                    if (areInputsFilled()) {
-                      document
-                        .getElementById("bookmark-button")
-                        .classList.add("invisible");
-                      document
-                        .getElementById("name-input")
-                        .classList.toggle("invisible");
-                      document
-                        .getElementById("add-bookmark-button")
-                        .classList.remove("invisible");
-                      document
-                        .getElementById("add-bookmark-cancel")
-                        .classList.remove("invisible");
-                      document
-                        .getElementById("file-input")
-                        .classList.add("invisible");
-                      document
-                        .getElementById("search-icon")
-                        .classList.add("invisible");
-                      document
-                        .getElementById("export-button")
-                        .classList.add("invisible");
-                      document
-                        .getElementById("clear-all-button")
-                        .classList.add("invisible");
-
-                      document.getElementById("name-input").value = "";
-                    }
-                  }}
+                  onClick={toggleAddingBookmark}
                 >
                   Add bookmark
                 </button>
@@ -305,7 +276,7 @@ export const BookmarkMenu = () => {
                       setStateBookmarks([]);
                     }}
                   >
-                    Clear
+                    Clear all
                   </button>
                   <ExportButton
                     data={handleDataForExport(stateBookmarks)}

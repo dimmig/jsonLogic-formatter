@@ -295,3 +295,22 @@ export function handleDataForExport(bookmarks) {
   }
   return result;
 }
+
+export function toggleAddingBookmark() {
+  if (areInputsFilled()) {
+    document.getElementById("bookmark-button").classList.add("invisible");
+    document.getElementById("name-input").classList.toggle("invisible");
+    document
+      .getElementById("add-bookmark-button")
+      .classList.remove("invisible");
+    document
+      .getElementById("add-bookmark-cancel")
+      .classList.remove("invisible");
+    document.getElementById("file-input").classList.add("invisible");
+    document.getElementById("search-icon").classList.add("invisible");
+    document.getElementById("export-button").classList.add("invisible");
+    document.getElementById("clear-all-button").classList.add("invisible");
+
+    document.getElementById("name-input").value = "";
+  }
+}
