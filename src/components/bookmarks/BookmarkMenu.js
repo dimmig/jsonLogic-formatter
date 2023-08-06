@@ -182,10 +182,14 @@ export const BookmarkMenu = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const fileContent = JSON.parse(event.target.result);
-        for (const object of fileContent) {
-          const bookmarkName = object.subpart + object.section;
+        for (let i = 0; i < fileContent.length; i++) {
+          const bookmarkName = fileContent[i].subpart + fileContent[i].section;
           let resultedBookmarks;
-          resultedBookmarks = addBookmark(stateBookmarks, bookmarkName, object);
+          resultedBookmarks = addBookmark(
+            stateBookmarks,
+            bookmarkName,
+            fileContent[i]
+          );
           if (resultedBookmarks.length) {
             setStateBookmarks(resultedBookmarks);
             localStorage.setItem(

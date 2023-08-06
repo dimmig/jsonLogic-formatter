@@ -111,19 +111,11 @@ export const encodeUrl = (
   return url;
 };
 
-export const scrollToBottom = (ref, needAnimation) => {
+export const scrollToBottom = (ref) => {
   if (ref.current) {
-    setTimeout(() => {
-      ref.current.scrollIntoView(
-        needAnimation
-          ? {
-              behavior: "smooth",
-            }
-          : {
-              behavior: "auto",
-            }
-      );
-    }, 0);
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+    });
   }
 };
 
@@ -137,9 +129,11 @@ function filterData(rule, data) {
     return data;
   }
 
-  for (const key of Object.keys(parsedData)) {
-    if (rule.includes(key)) {
-      result[key] = JSON.parse(data)[key];
+  const keysArray = Object.keys(parsedData);
+
+  for (let i = 0; i < keysArray.length; i++) {
+    if (rule.includes(keysArray[i])) {
+      result[keysArray[i]] = JSON.parse(data)[keysArray[i]];
     }
   }
   return result;

@@ -80,8 +80,8 @@ export const Result = (props) => {
     copyButton.classList.remove("invisible");
 
     const varData = document.querySelectorAll("#var-data");
-    scrollToBottom(resultRef, true);
-    
+    scrollToBottom(resultRef);
+
     if (varData !== null) {
       window.innerWidth > 1023
         ? addHoverEvent(varData)
@@ -96,7 +96,7 @@ export const Result = (props) => {
 
     const copyButton = document.getElementById("copy-button");
     copyButton.classList.add("invisible");
-    scrollToBottom(resultRef, true);
+    scrollToBottom(resultRef);
   }
 
   function copy(id) {
@@ -115,7 +115,7 @@ export const Result = (props) => {
     setTimeout(() => {
       setIsCopied(false);
       copyButton.classList.remove("completed");
-    }, 2000);
+    }, 1000);
   }
 
   return (

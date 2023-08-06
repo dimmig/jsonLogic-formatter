@@ -39,7 +39,7 @@ export const Data = () => {
                 document
                   .getElementById("url-button")
                   .classList.remove("completed");
-              }, 2000);
+              }, 1000);
             }
           }}
         >

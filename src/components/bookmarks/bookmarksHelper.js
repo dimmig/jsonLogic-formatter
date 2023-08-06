@@ -96,9 +96,9 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
 }
 
 function isDublicate(bookmarks, item) {
-  for (const bookmark of bookmarks) {
-    if (Object.keys(bookmark)[0] === item) {
-      return bookmarks.indexOf(bookmark);
+  for (let i = 0; i < bookmarks.length; i++) {
+    if (Object.keys(bookmarks[i])[0] === item) {
+      return bookmarks.indexOf(bookmarks[i]);
     }
   }
   return false;
@@ -106,9 +106,9 @@ function isDublicate(bookmarks, item) {
 
 export function editBookmark(id, stateBookmarks, editedData) {
   let target = null;
-  for (const el of stateBookmarks) {
-    if (Object.keys(el)[0] === id) {
-      target = el;
+  for (let i = 0; i < stateBookmarks.length; i++) {
+    if (Object.keys(stateBookmarks[i])[0] === id) {
+      target = stateBookmarks[i];
     }
   }
 
@@ -250,12 +250,11 @@ export function handleDataForExport(bookmarks) {
   if (bookmarks.length === 0) {
     return;
   }
-
   const result = [];
 
-  for (const el of bookmarks) {
-    const name = Object.keys(el)[0];
-    const link = Object.values(el)[0];
+  for (let i = 0; i < bookmarks.length; i++) {
+    const name = Object.keys(bookmarks[i])[0];
+    const link = Object.values(bookmarks[i])[0];
 
     if (!name || !link) {
       return [];
