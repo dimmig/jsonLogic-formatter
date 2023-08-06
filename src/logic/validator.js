@@ -16,10 +16,8 @@ export function validate(jsonLogicString, data) {
   const result = {};
   let res;
 
-  const entriesArray = Object.entries(parsedJson);
-
-  for (let i = 0; i < entriesArray.length; i++) {
-    res = goThroughtObject(entriesArray[i], parsedData, result);
+  for (const [, value] of Object.entries(parsedJson)) {
+    res = goThroughtObject(value, parsedData, result);
   }
   return res;
 }
