@@ -35,11 +35,7 @@ export const BookmarkMenu = () => {
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    if (stateBookmarks.length !== 0) {
-      localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
-    } else {
-      localStorage.clear();
-    }
+    localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
     if (stateBookmarks.length > 0) {
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
@@ -47,13 +43,7 @@ export const BookmarkMenu = () => {
       document.getElementById("clear-all-button").classList.add("disabled");
       document.getElementById("export-button").classList.add("disabled");
     }
-  }, [stateBookmarks]);
-
-  function clearState() {
-    localStorage.clear();
-    setSearchBookmarks([]);
-    setStateBookmarks([]);
-  }
+  }, [stateBookmarks, searchBookmarks]);
 
   function renderList() {
     if (stateBookmarks === null) {
@@ -85,10 +75,6 @@ export const BookmarkMenu = () => {
         .classList.contains("invisible")
         ? stateBookmarks
         : searchBookmarks;
-    }
-
-    if (!acceptedBookmarks.length) {
-      return;
     }
 
     return acceptedBookmarks.map((el) => {
@@ -166,8 +152,8 @@ export const BookmarkMenu = () => {
       }
       document.getElementById(inputId).classList.remove("invalid-input");
 
-      setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
       setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
+      setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
     }
   }
 
@@ -196,14 +182,10 @@ export const BookmarkMenu = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const fileContent = JSON.parse(event.target.result);
-        for (let i = 0; i < fileContent.length; i++) {
-          const bookmarkName = fileContent[i].subpart + fileContent[i].section;
+        for (const object of fileContent) {
+          const bookmarkName = object.subpart + object.section;
           let resultedBookmarks;
-          resultedBookmarks = addBookmark(
-            stateBookmarks,
-            bookmarkName,
-            fileContent[i]
-          );
+          resultedBookmarks = addBookmark(stateBookmarks, bookmarkName, object);
           if (resultedBookmarks.length) {
             setStateBookmarks(resultedBookmarks);
             localStorage.setItem(
@@ -279,7 +261,18 @@ export const BookmarkMenu = () => {
                 <LiaSearchSolid
                   className="search-icon"
                   id="search-icon"
-                  onClick={() => showSearchInput(true, stateBookmarks)}
+                  onClick={() => {
+                    showSearchInput(true, stateBookmarks);
+                    const newState = JSON.parse(
+                      localStorage.getItem("bookmarks")
+                    );
+                    localStorage.setItem(
+                      "bookmarks-before-search",
+                      JSON.stringify(newState)
+                    );
+                    setStateBookmarks(newState);
+                    setSearchBookmarks(newState);
+                  }}
                 />
               </div>
               <div className="import-export-block" id="import-export-block">
@@ -288,12 +281,16 @@ export const BookmarkMenu = () => {
                   <button
                     className="bookmark-btn reset-all-button"
                     id="clear-all-button"
-                    onClick={clearState}
+                    onClick={() => {
+                      localStorage.clear();
+                      setSearchBookmarks([]);
+                      setStateBookmarks([]);
+                    }}
                   >
                     Clear all
                   </button>
                   <ExportButton
-                    data={() => handleDataForExport(stateBookmarks)}
+                    data={handleDataForExport(stateBookmarks)}
                     fileName={new Date().getTime()}
                   />
                 </div>

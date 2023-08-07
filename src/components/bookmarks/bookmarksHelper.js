@@ -255,7 +255,7 @@ export function deleteBookmark(id, stateBookmarks) {
 }
 
 export function handleDataForExport(bookmarks) {
-  if (bookmarks.length === 0) {
+  if (!bookmarks || bookmarks.length === 0) {
     return;
   }
   const result = [];
