@@ -113,7 +113,7 @@ export function editBookmark(id, stateBookmarks, editedData) {
   }
 
   if (target === null) {
-    return "Bookmark is not found";
+    return [];
   }
 
   const index = stateBookmarks.indexOf(target);

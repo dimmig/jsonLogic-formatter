@@ -43,7 +43,13 @@ export const BookmarkMenu = () => {
       document.getElementById("clear-all-button").classList.add("disabled");
       document.getElementById("export-button").classList.add("disabled");
     }
-  }, [stateBookmarks, searchBookmarks]);
+  }, [stateBookmarks]);
+
+  function clearState() {
+    localStorage.clear();
+    setSearchBookmarks([]);
+    setStateBookmarks([]);
+  }
 
   function renderList() {
     if (stateBookmarks === null) {
@@ -75,6 +81,10 @@ export const BookmarkMenu = () => {
         .classList.contains("invisible")
         ? stateBookmarks
         : searchBookmarks;
+    }
+
+    if (!acceptedBookmarks.length) {
+      return;
     }
 
     return acceptedBookmarks.map((el) => {
@@ -152,8 +162,15 @@ export const BookmarkMenu = () => {
       }
       document.getElementById(inputId).classList.remove("invalid-input");
 
-      setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
-      setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
+      if (
+        document.getElementById("search-input").classList.contains("invisible")
+      ) {
+        setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
+        setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
+      } else {
+        setStateBookmarks(editBookmark(name, searchBookmarks, editedName));
+        setSearchBookmarks(editBookmark(name, searchBookmarks, editedName));
+      }
     }
   }
 
@@ -274,16 +291,12 @@ export const BookmarkMenu = () => {
                   <button
                     className="bookmark-btn reset-all-button"
                     id="clear-all-button"
-                    onClick={() => {
-                      localStorage.clear();
-                      setSearchBookmarks([]);
-                      setStateBookmarks([]);
-                    }}
+                    onClick={clearState}
                   >
                     Clear all
                   </button>
                   <ExportButton
-                    data={handleDataForExport(stateBookmarks)}
+                    data={() => handleDataForExport(stateBookmarks)}
                     fileName={new Date().getTime()}
                   />
                 </div>
