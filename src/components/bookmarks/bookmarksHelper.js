@@ -232,11 +232,19 @@ export function deleteBookmark(id, stateBookmarks) {
     result = storage.filter((el) => Object.keys(el)[0] !== id);
     localStorage.setItem("bookmarks-before-search", JSON.stringify(result));
     document.getElementById("search-input").value = "";
+
+    if (stateBookmarks.length === 1) {
+      document.getElementById("list").classList.add("invisible-list");
+      localStorage.clear();
+      return [];
+    }
+
     return result;
   }
 
   if (stateBookmarks.length === 1) {
     document.getElementById("list").classList.add("invisible-list");
+    localStorage.clear();
     return [];
   }
 

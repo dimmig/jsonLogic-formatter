@@ -35,7 +35,11 @@ export const BookmarkMenu = () => {
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
+    if (stateBookmarks.length !== 0) {
+      localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
+    } else {
+      localStorage.clear();
+    }
     if (stateBookmarks.length > 0) {
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
@@ -162,15 +166,8 @@ export const BookmarkMenu = () => {
       }
       document.getElementById(inputId).classList.remove("invalid-input");
 
-      if (
-        document.getElementById("search-input").classList.contains("invisible")
-      ) {
-        setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
-        setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
-      } else {
-        setStateBookmarks(editBookmark(name, searchBookmarks, editedName));
-        setSearchBookmarks(editBookmark(name, searchBookmarks, editedName));
-      }
+      setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
+      setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
     }
   }
 
