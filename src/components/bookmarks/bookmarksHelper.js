@@ -34,7 +34,13 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
             object.section,
             true
           ))
-        : (link = encodeUrl(JSON.parse(expression), null, bookmarkName, true));
+        : (link = encodeUrl(
+            JSON.parse(expression),
+            null,
+            bookmarkName,
+            object.section,
+            true
+          ));
       stateBookmarks.splice(index, 1, {
         [bookmarkName]: link,
       });
@@ -71,9 +77,11 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
             object.section,
             true
           ));
-      stateBookmarks.push({
+
+      stateBookmarks.unshift({
         [bookmarkName]: link,
       });
+
       return stateBookmarks;
     }
 
@@ -97,7 +105,7 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
 
 function isDublicate(bookmarks, item) {
   for (let i = 0; i < bookmarks.length; i++) {
-    if (Object.keys(bookmarks[i])[0] === item) {
+    if (Object.keys(bookmarks[i])[0].trim() === item.trim()) {
       return bookmarks.indexOf(bookmarks[i]);
     }
   }
@@ -168,7 +176,7 @@ export function showSearchInput(needToShow, state) {
     document.getElementById("clear-all-button").classList.remove("invisible");
     document.getElementById("bookmarks-length").classList.remove("invisible");
 
-    return JSON.parse(localStorage.getItem("bookmarks-before-search")) || [];
+    return localStorage.getItem("bookmarks-before-search") || "[]";
   }
 }
 
@@ -267,20 +275,34 @@ export function handleDataForExport(bookmarks) {
     if (!name || !link) {
       return [];
     }
-    let expression = atob(new URL(link).searchParams.get("rule"));
-    if (!new URL(link) || !new URL(link).searchParams.get("rule")) {
+
+    let expression;
+    let sample_data;
+    let subpart;
+
+    try {
+      new URL(link);
+    } catch (_) {
+      result.push({
+        subpart: "",
+        section: "",
+        expression: "",
+        sample_data: "",
+      });
+    }
+
+    expression = atob(new URL(link).searchParams.get("rule"));
+    if (!new URL(link).searchParams.get("rule")) {
       expression = "";
     }
 
-    let sample_data = atob(new URL(link).searchParams.get("data"));
-    if (!new URL(link) || !new URL(link).searchParams.get("data")) {
+    sample_data = atob(new URL(link).searchParams.get("data"));
+    if (!new URL(link).searchParams.get("data")) {
       sample_data = "";
     }
 
     let section = new URL(link).searchParams.get("section");
-    let subpart;
-
-    if (!new URL(link) || !section) {
+    if (!section) {
       section = "";
     } else {
       section = JSON.parse(atob(section));

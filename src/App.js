@@ -13,16 +13,16 @@ function App() {
   return (
     <div>
       <div className="application">
+        <div className="bookmarks-part">
+          <BookmarksHeader />
+          <BookmarkMenu />
+        </div>
         <div className="main-app">
           <Header />
           <div className="forms">
             <Forms setParsedJson={setParsedJson} />
             <ErrorBlock jsonData={parsedJson} />
           </div>
-        </div>
-        <div className="bookmarks-part">
-          <BookmarksHeader />
-          <BookmarkMenu />
         </div>
       </div>
       <div id="result" className="result-block">

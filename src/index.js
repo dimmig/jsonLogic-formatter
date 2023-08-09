@@ -1,13 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import App from "./App";
+import store from "./app/store";
+import { addItem } from "./app/storeSlice";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+const initialBookmarks = JSON.parse(localStorage.getItem("bookmarks")) || [];
+store.dispatch(addItem(JSON.stringify(initialBookmarks)));
+
 root.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

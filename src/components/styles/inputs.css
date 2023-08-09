@@ -163,7 +163,7 @@ pre {
 
 .buttons-wrapper {
   display: flex;
-  width: 90vw;
+  width: 70vw;
   flex-direction: row;
   align-items: center;
 }

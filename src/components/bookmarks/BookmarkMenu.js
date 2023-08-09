@@ -20,37 +20,41 @@ import "../styles/inputs.css";
 import "../styles/bookmark.css";
 import "../styles/form.css";
 import { ExportButton } from "../subcomponents/ExportButton";
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, deleteItem, editItem } from "../../app/storeSlice";
 
 export const BookmarkMenu = () => {
-  const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
+  const dispatch = useDispatch();
 
   const listRef = useRef(null);
   const errorRef = useRef(null);
   const cancelInput = useRef(null);
   const inputRef = useRef();
-  const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
   const [searchBookmarks, setSearchBookmarks] = useState([]);
   const [bookmarkName, setBookmarkName] = useState("");
   const [editedName, setEditedName] = useState(null);
   const [completed, setCompleted] = useState(false);
+
+  const stateBookmarks = useSelector((state) => state.bookmarks.value);
 
   useEffect(() => {
     localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
     if (stateBookmarks.length > 0) {
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
+      if (
+        document.getElementById("search-input").classList.contains("invisible")
+      ) {
+        document
+          .getElementById("bookmarks-length")
+          .classList.remove("invisible");
+      }
     } else {
       document.getElementById("clear-all-button").classList.add("disabled");
       document.getElementById("export-button").classList.add("disabled");
+      document.getElementById("bookmarks-length").classList.add("invisible");
     }
-  }, [stateBookmarks, searchBookmarks]);
-
-  function onStateUpdate() {
-    const newState = JSON.parse(localStorage.getItem("bookmarks"));
-    localStorage.setItem("bookmarks-before-search", JSON.stringify(newState));
-    setStateBookmarks(newState);
-    setSearchBookmarks(newState);
-  }
+  }, [searchBookmarks, stateBookmarks]);
 
   function renderList() {
     if (stateBookmarks === null) {
@@ -76,6 +80,7 @@ export const BookmarkMenu = () => {
       }
     }
     let acceptedBookmarks = stateBookmarks;
+    console.log("SEAECH", searchBookmarks);
     if (document.getElementById("search-input") !== null) {
       acceptedBookmarks = document
         .getElementById("search-input")
@@ -83,7 +88,7 @@ export const BookmarkMenu = () => {
         ? stateBookmarks
         : searchBookmarks;
     }
-
+    
     return acceptedBookmarks.map((el) => {
       const name = Object.keys(el)[0];
       const link = Object.values(el)[0];
@@ -104,7 +109,7 @@ export const BookmarkMenu = () => {
             <ImBin
               className="icon"
               onClick={() => {
-                setStateBookmarks(deleteBookmark(name, stateBookmarks));
+                dispatch(deleteItem(JSON.stringify({ name, stateBookmarks })));
                 setSearchBookmarks(deleteBookmark(name, stateBookmarks));
               }}
             />
@@ -158,8 +163,8 @@ export const BookmarkMenu = () => {
         return;
       }
       document.getElementById(inputId).classList.remove("invalid-input");
-
-      setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
+      const data = JSON.stringify({ name, stateBookmarks, editedName });
+      dispatch(editItem(data));
       setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
     }
   }
@@ -178,7 +183,7 @@ export const BookmarkMenu = () => {
         .getElementById("add-bookmark-button")
         .classList.add("completed-button");
 
-      setStateBookmarks(resultedBookmarks);
+      dispatch(addItem(JSON.stringify(resultedBookmarks)));
       return true;
     }
     return false;
@@ -189,23 +194,13 @@ export const BookmarkMenu = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const fileContent = JSON.parse(event.target.result);
+        const stateCopy = [...stateBookmarks];
         for (const object of fileContent) {
           const bookmarkName = object.subpart + object.section;
           let resultedBookmarks;
-          resultedBookmarks = addBookmark(stateBookmarks, bookmarkName, object);
-          if (resultedBookmarks.length) {
-            setStateBookmarks(resultedBookmarks);
-            localStorage.setItem(
-              "bookmarks",
-              JSON.stringify(resultedBookmarks)
-            );
-          } else {
-            setStateBookmarks((prev) => [resultedBookmarks, ...prev]);
-            localStorage.setItem(
-              "bookmarks",
-              JSON.stringify([resultedBookmarks, ...stateBookmarks])
-            );
-          }
+          resultedBookmarks = addBookmark(stateCopy, bookmarkName, object);
+
+          dispatch(addItem(JSON.stringify(resultedBookmarks)));
         }
         setCompleted(true);
 
@@ -261,20 +256,16 @@ export const BookmarkMenu = () => {
                 <button
                   className="bookmark-btn disabled"
                   id="bookmark-button"
-                  onClick={() => {
-                    toggleAddingBookmark();
-                    onStateUpdate();
-                  }}
+                  onClick={() => toggleAddingBookmark()}
                 >
                   Add bookmark
                 </button>
                 <LiaSearchSolid
                   className="search-icon"
                   id="search-icon"
-                  onClick={() => {
-                    onStateUpdate();
-                    showSearchInput(true, stateBookmarks);
-                  }}
+                  onClick={() =>
+                    setSearchBookmarks(showSearchInput(true, stateBookmarks))
+                  }
                 />
               </div>
               <div className="import-export-block" id="import-export-block">
@@ -286,7 +277,7 @@ export const BookmarkMenu = () => {
                     onClick={() => {
                       localStorage.clear();
                       setSearchBookmarks([]);
-                      setStateBookmarks([]);
+                      dispatch(addItem("[]"));
                     }}
                   >
                     Clear all
@@ -303,7 +294,7 @@ export const BookmarkMenu = () => {
             <MdCancel
               className="icon cancel-icon search-cancel invisible"
               id="search-cancel"
-              onClick={() => setStateBookmarks(showSearchInput(false))}
+              onClick={() => dispatch(addItem(showSearchInput(false)))}
             />
             <input
               className="name-input search-input invisible"
@@ -430,19 +421,19 @@ export const BookmarkMenu = () => {
         >
           <h2>No bookmarks</h2>
         </div>
-        {stateBookmarks.length !== 0 ? (
-          <div className="list-length-block">
-            <span className="length-bookmarks-block" id="bookmarks-length">
-              <p className="bookmarks-length-text">Bookmarks:</p>
-              <p className="bookmarks-length">{stateBookmarks.length}</p>
-            </span>
-            <ul className="list scrollable" id="list" ref={listRef}>
-              {renderList()}
-            </ul>
-          </div>
-        ) : (
-          <ul className="invisible-list" id="list" ref={listRef}></ul>
-        )}
+
+        <div className="list-length-block">
+          <span
+            className="length-bookmarks-block invisible"
+            id="bookmarks-length"
+          >
+            <p className="bookmarks-length-text">Bookmarks:</p>
+            <p className="bookmarks-length">{stateBookmarks.length}</p>
+          </span>
+          <ul className="list scrollable" id="list" ref={listRef}>
+            {renderList()}
+          </ul>
+        </div>
       </div>
     </div>
   );

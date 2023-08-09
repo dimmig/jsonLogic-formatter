@@ -29,6 +29,7 @@ code {
 .bookmarks-part {
   width: 30vw;
   border: 1px solid #85bafa;
+  border-top: none;
   margin-bottom: 1rem;
 }
 
