@@ -26,7 +26,7 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
     ) {
       const index = isDublicate(stateBookmarks, bookmarkName);
       let link;
-      sampleData !== null && sampleData.length > 0
+      sampleData && sampleData.length > 0
         ? (link = encodeUrl(
             JSON.parse(expression),
             JSON.parse(sampleData),
@@ -56,7 +56,7 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
 
     let link;
     if (expression !== null) {
-      sampleData !== null && sampleData.length > 0
+      sampleData && sampleData.length > 0
         ? (link = encodeUrl(
             JSON.parse(expression),
             JSON.parse(sampleData),

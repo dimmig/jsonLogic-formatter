@@ -45,6 +45,14 @@ export const BookmarkMenu = () => {
     }
   }, [stateBookmarks, searchBookmarks]);
 
+  function onSearchUpdate() {
+    showSearchInput(true, stateBookmarks);
+    const newState = JSON.parse(localStorage.getItem("bookmarks"));
+    localStorage.setItem("bookmarks-before-search", JSON.stringify(newState));
+    setStateBookmarks(newState);
+    setSearchBookmarks(newState);
+  }
+
   function renderList() {
     if (stateBookmarks === null) {
       return;
@@ -261,18 +269,7 @@ export const BookmarkMenu = () => {
                 <LiaSearchSolid
                   className="search-icon"
                   id="search-icon"
-                  onClick={() => {
-                    showSearchInput(true, stateBookmarks);
-                    const newState = JSON.parse(
-                      localStorage.getItem("bookmarks")
-                    );
-                    localStorage.setItem(
-                      "bookmarks-before-search",
-                      JSON.stringify(newState)
-                    );
-                    setStateBookmarks(newState);
-                    setSearchBookmarks(newState);
-                  }}
+                  onClick={onSearchUpdate}
                 />
               </div>
               <div className="import-export-block" id="import-export-block">
