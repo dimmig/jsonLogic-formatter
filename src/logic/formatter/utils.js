@@ -6,7 +6,7 @@ import {
   LESS_OR_EQUAL,
   NOT_EQUAL,
 } from "../constants";
-import "../../components/styles/inputs.css";
+import "../../components/assets/styles/inputs.css";
 
 export function symbolGenerator(counter, symbol) {
   let res = "";

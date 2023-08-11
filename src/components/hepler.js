@@ -71,7 +71,7 @@ export const encodeUrl = (
   section = null,
   isFile = false
 ) => {
-  const url = new URL(window.location.href);
+  const url = removeUrlParams(new URL(window.location.href));
 
   if (rule !== null && data !== null && !isFile) {
     rule = JSON.parse(sessionStorage.getItem("rule-data"));
@@ -137,6 +137,14 @@ function filterData(rule, data) {
     }
   }
   return result;
+}
+
+function removeUrlParams(url) {
+  url.searchParams.delete("rule");
+  url.searchParams.delete("data");
+  url.searchParams.delete("bookmarkName");
+  url.searchParams.delete("section");
+  return url;
 }
 
 function save(rule, data) {

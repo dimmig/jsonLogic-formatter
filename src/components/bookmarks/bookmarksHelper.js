@@ -77,11 +77,9 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
             object.section,
             true
           ));
-
-      stateBookmarks.unshift({
+      stateBookmarks.push({
         [bookmarkName]: link,
       });
-
       return stateBookmarks;
     }
 
@@ -89,7 +87,6 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
     document.getElementById("export-button").classList.add("invisible");
     document.getElementById("name-input").classList.add("invisible");
     document.getElementById("name-input").classList.remove("invalid-input");
-    document.getElementById("search-icon").classList.add("invisible");
     document.getElementById("list").classList.remove("invisible-list");
 
     link = encodeUrl(rule.value, JSON.parse(data.value), bookmarkName);
@@ -105,14 +102,14 @@ export function addBookmark(stateBookmarks, bookmarkName, object) {
 
 function isDublicate(bookmarks, item) {
   for (let i = 0; i < bookmarks.length; i++) {
-    if (Object.keys(bookmarks[i])[0].trim() === item.trim()) {
+    if (Object.keys(bookmarks[i])[0] === item) {
       return bookmarks.indexOf(bookmarks[i]);
     }
   }
   return false;
 }
 
-export function editBookmark(id, stateBookmarks, editedData) {
+export function editBookmark(id, stateBookmarks, editedName) {
   let target = null;
   for (let i = 0; i < stateBookmarks.length; i++) {
     if (Object.keys(stateBookmarks[i])[0] === id) {
@@ -127,73 +124,26 @@ export function editBookmark(id, stateBookmarks, editedData) {
   const index = stateBookmarks.indexOf(target);
   let result = [...stateBookmarks];
   const url = new URL(Object.values(target)[0]);
-  url.searchParams.set("bookmarkName", editedData);
+  url.searchParams.set("bookmarkName", editedName);
 
   if (url.searchParams.get("section")) {
     url.searchParams.delete("section");
   }
 
-  if (
-    !document.getElementById("search-input").classList.contains("invisible")
-  ) {
+  if (id === document.title) {
+    document.title = editedName;
+  }
+
+  if (document.getElementById("search-input").value.length > 0) {
     result = JSON.parse(localStorage.getItem("bookmarks-before-search")) || [];
-    result.splice(index, 1, { [editedData]: url });
+    result.splice(index, 1, { [editedName]: url });
     localStorage.setItem("bookmarks-before-search", JSON.stringify(result));
     document.getElementById("search-input").value = "";
-    showEditInput(id, false);
     return result;
   }
 
-  result.splice(index, 1, { [editedData]: url });
-  showEditInput(id, false);
+  result.splice(index, 1, { [editedName]: url });
   return result;
-}
-
-export function showSearchInput(needToShow, state) {
-  if (document.getElementById("list").classList.contains("invisible-list")) {
-    return;
-  }
-
-  if (needToShow) {
-    localStorage.setItem("bookmarks-before-search", JSON.stringify(state));
-
-    document.getElementById("bookmark-button").classList.add("invisible");
-    document.getElementById("file-input").classList.add("invisible");
-    document.getElementById("search-input").classList.remove("invisible");
-    document.getElementById("search-icon").classList.add("invisible");
-    document.getElementById("search-cancel").classList.remove("invisible");
-    document.getElementById("export-button").classList.add("invisible");
-    document.getElementById("clear-all-button").classList.add("invisible");
-    document.getElementById("bookmarks-length").classList.add("invisible");
-  } else {
-    document.getElementById("bookmark-button").classList.remove("invisible");
-    document.getElementById("file-input").classList.remove("invisible");
-    document.getElementById("search-input").classList.add("invisible");
-    document.getElementById("search-input").value = "";
-    document.getElementById("search-cancel").classList.add("invisible");
-    document.getElementById("search-icon").classList.remove("invisible");
-    document.getElementById("export-button").classList.remove("invisible");
-    document.getElementById("clear-all-button").classList.remove("invisible");
-    document.getElementById("bookmarks-length").classList.remove("invisible");
-
-    return localStorage.getItem("bookmarks-before-search") || "[]";
-  }
-}
-
-export function showEditInput(id, needToShow) {
-  if (needToShow) {
-    document.getElementById(id).classList.add("invisible");
-    document.getElementById(id).classList.remove("item");
-    document.getElementById(`cancel_${id}`).classList.remove("invisible");
-    document.getElementById(`input_${id}`).classList.remove("invisible");
-    document.getElementById(`editButton_${id}`).classList.remove("invisible");
-  } else {
-    document.getElementById(id).classList.add("item");
-    document.getElementById(id).classList.remove("invisible");
-    document.getElementById(`cancel_${id}`).classList.add("invisible");
-    document.getElementById(`input_${id}`).classList.add("invisible");
-    document.getElementById(`editButton_${id}`).classList.add("invisible");
-  }
 }
 
 export function removeNameInput() {
@@ -201,7 +151,6 @@ export function removeNameInput() {
   document.getElementById("add-bookmark-button").classList.add("invisible");
   document.getElementById("add-bookmark-cancel").classList.add("invisible");
   document.getElementById("file-input").classList.remove("invisible");
-  document.getElementById("search-icon").classList.remove("invisible");
   document.getElementById("bookmark-button").classList.remove("invisible");
   document.getElementById("export-button").classList.remove("invisible");
 }
@@ -336,10 +285,18 @@ export function toggleAddingBookmark() {
       .getElementById("add-bookmark-cancel")
       .classList.remove("invisible");
     document.getElementById("file-input").classList.add("invisible");
-    document.getElementById("search-icon").classList.add("invisible");
     document.getElementById("export-button").classList.add("invisible");
     document.getElementById("clear-all-button").classList.add("invisible");
 
     document.getElementById("name-input").value = "";
   }
+}
+
+export function toggleBookmarksBlock() {
+  document.getElementById("bookmarks-part").classList.toggle("invisible");
+  document.getElementById("main-app").classList.toggle("full-screen");
+  document
+    .querySelectorAll(".textarea")
+    .forEach((el) => el.classList.toggle("full-width-textarea"));
+  document.querySelector(".show-tip").classList.toggle("invisible");
 }

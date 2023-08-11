@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ImBin } from "react-icons/im";
-import { BiSolidEditAlt } from "react-icons/bi";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
-import { LiaSearchSolid } from "react-icons/lia";
 import {
   addBookmark,
   deleteBookmark,
@@ -11,162 +9,130 @@ import {
   handleDataForExport,
   handleSearch,
   removeNameInput,
-  showEditInput,
-  showSearchInput,
   toggleAddingBookmark,
 } from "./bookmarksHelper";
 import { FileInput } from "../subcomponents/FileInput";
-import "../styles/inputs.css";
-import "../styles/bookmark.css";
-import "../styles/form.css";
 import { ExportButton } from "../subcomponents/ExportButton";
-import { useDispatch, useSelector } from "react-redux";
-import { addItem, deleteItem, editItem } from "../../app/storeSlice";
+import "../assets/styles/inputs.css";
+import "../assets/styles/bookmark.css";
+import "../assets/styles/form.css";
 
 export const BookmarkMenu = () => {
-  const dispatch = useDispatch();
+  const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
 
   const listRef = useRef(null);
   const errorRef = useRef(null);
   const cancelInput = useRef(null);
-  const inputRef = useRef();
+  const searchInput = useRef(null);
+  const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
   const [searchBookmarks, setSearchBookmarks] = useState([]);
-  const [bookmarkName, setBookmarkName] = useState("");
+  const [bookmarkName, setBookmarkName] = useState(null);
   const [editedName, setEditedName] = useState(null);
   const [completed, setCompleted] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(false);
 
-  const stateBookmarks = useSelector((state) => state.bookmarks.value);
+  useEffect(() => {
+    localStorage.setItem(
+      "bookmarks-before-search",
+      JSON.stringify(stateBookmarks)
+    );
+  }, [stateBookmarks]);
 
   useEffect(() => {
     localStorage.setItem("bookmarks", JSON.stringify(stateBookmarks));
     if (stateBookmarks.length > 0) {
+      setInputDisabled(false);
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
-      if (
-        document.getElementById("search-input").classList.contains("invisible")
-      ) {
-        document
-          .getElementById("bookmarks-length")
-          .classList.remove("invisible");
-      }
     } else {
+      setInputDisabled(true);
       document.getElementById("clear-all-button").classList.add("disabled");
       document.getElementById("export-button").classList.add("disabled");
-      document.getElementById("bookmarks-length").classList.add("invisible");
     }
-  }, [searchBookmarks, stateBookmarks]);
+  }, [stateBookmarks, searchBookmarks]);
+
+  function clearAllBookmarks() {
+    if (window.confirm("Do you want to delete ALL the bookmars")) {
+      localStorage.clear();
+      setSearchBookmarks([]);
+      setStateBookmarks([]);
+    }
+  }
 
   function renderList() {
     if (stateBookmarks === null) {
       return;
     }
-    if (document.getElementById("list") !== null) {
-      if (
-        document.getElementById("list").clientWidth >
-          window.screen.width * 0.6 &&
-        window.screen.width > 767
-      ) {
-        document.getElementById("list").classList.add("scrollable");
-      } else if (
-        document.getElementById("list").clientWidth >
-          window.screen.width * 0.6 &&
-        window.screen.width > 767
-      ) {
-        document.getElementById("list").classList.remove("scrollable");
-      } else if (stateBookmarks.length > 2 && window.screen.width < 767) {
-        document.getElementById("list").classList.add("mobile-scrollable");
-      } else {
-        document.getElementById("list").classList.remove("mobile-scrollable");
-      }
-    }
+
     let acceptedBookmarks = stateBookmarks;
-    console.log("SEAECH", searchBookmarks);
-    if (document.getElementById("search-input") !== null) {
-      acceptedBookmarks = document
-        .getElementById("search-input")
-        .classList.contains("invisible")
-        ? stateBookmarks
-        : searchBookmarks;
+    if (searchInput.current && searchInput.current.value.trim().length > 0) {
+      acceptedBookmarks = searchBookmarks;
+      searchInput.current.classList.add("empty-background");
     }
-    
+
+    if (searchInput.current && searchInput.current.value.trim().length === 0) {
+      searchInput.current.classList.remove("empty-background");
+    }
+
     return acceptedBookmarks.map((el) => {
       const name = Object.keys(el)[0];
       const link = Object.values(el)[0];
 
       const inputId = `input_${name}`;
-      const cancelId = `cancel_${name}`;
-      const editButtonId = `editButton_${name}`;
 
       if (name.length === 0) {
         return null;
       }
       return (
-        <div className="li-block" key={name} ref={cancelInput}>
-          <div className="item" id={name}>
-            <a target="_blank" rel="noreferrer" href={link}>
-              <li title={name}>{name}</li>
-            </a>
-            <ImBin
-              className="icon"
-              onClick={() => {
-                dispatch(deleteItem(JSON.stringify({ name, stateBookmarks })));
-                setSearchBookmarks(deleteBookmark(name, stateBookmarks));
-              }}
-            />
-            <BiSolidEditAlt
-              className="icon"
-              onClick={() => showEditInput(name, true)}
-            />
-          </div>
-          <MdCancel
-            className="icon cancel-icon invisible"
-            id={cancelId}
-            onClick={() => {
-              showEditInput(name, false);
-            }}
-          />
-          <input
-            ref={inputRef}
-            className="name-input edit-input invisible"
-            id={inputId}
-            placeholder="Type your new name"
-            onChange={(e) => setEditedName(e.target.value)}
-            onKeyDown={(e) => {
-              editValue(e, inputId, name);
-            }}
-          />
-          <button
-            className="invisible bookmark-btn edit-button"
-            id={editButtonId}
-            onClick={() => {
-              const event = new KeyboardEvent("keydown", {
-                key: "Enter",
-              });
-              editValue(event, inputId, name);
-            }}
-          >
-            Edit
-          </button>
+        <div className="li-block" key={name} ref={cancelInput} id={name}>
+          <li>
+            <div className="input-open-block">
+              <input
+                defaultValue={name}
+                className="bookmark-name-input"
+                id={inputId}
+                onChange={(e) => setEditedName(e.target.value)}
+                onBlur={() => editValue(inputId, name)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    editValue(inputId, name);
+                  }
+                }}
+              />
+              <div className="open-remove-block">
+                <a href={link}>
+                  <button className="open-link-btn bookmark-btn">Open</button>
+                </a>
+                <ImBin
+                  className="icon"
+                  onClick={() => {
+                    setStateBookmarks(deleteBookmark(name, stateBookmarks));
+                    setSearchBookmarks(deleteBookmark(name, stateBookmarks));
+                  }}
+                />
+              </div>
+            </div>
+          </li>
         </div>
       );
     });
   }
 
-  function editValue(e, inputId, name) {
-    if (e.key === "Enter") {
-      const duplicate = stateBookmarks.filter(
-        (el) => Object.keys(el)[0] === editedName
-      );
-      if (duplicate.length !== 0 || editedName === null) {
-        document.getElementById(inputId).classList.add("invalid-input");
-        document.getElementById(inputId).focus();
-        return;
-      }
-      document.getElementById(inputId).classList.remove("invalid-input");
-      const data = JSON.stringify({ name, stateBookmarks, editedName });
-      dispatch(editItem(data));
-      setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
+  function editValue(inputId, name) {
+    if (editedName === null) {
+      return;
     }
+
+    const duplicate = stateBookmarks.filter(
+      (el) => Object.keys(el)[0] === editedName
+    );
+    if ((duplicate.length !== 0 && duplicate !== name) || editedName === "") {
+      document.getElementById(inputId).value = name;
+
+      return;
+    }
+    setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
+    setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
   }
 
   function validateAndAddBookmark(e) {
@@ -183,127 +149,61 @@ export const BookmarkMenu = () => {
         .getElementById("add-bookmark-button")
         .classList.add("completed-button");
 
-      dispatch(addItem(JSON.stringify(resultedBookmarks)));
+      setStateBookmarks(resultedBookmarks);
+      setSearchBookmarks(resultedBookmarks);
       return true;
     }
     return false;
   }
 
-  function handleFileUpload(file) {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const fileContent = JSON.parse(event.target.result);
-        const stateCopy = [...stateBookmarks];
-        for (const object of fileContent) {
-          const bookmarkName = object.subpart + object.section;
-          let resultedBookmarks;
-          resultedBookmarks = addBookmark(stateCopy, bookmarkName, object);
-
-          dispatch(addItem(JSON.stringify(resultedBookmarks)));
-        }
-        setCompleted(true);
-
-        document
-          .getElementById("add-bookmark-button")
-          .classList.remove("invisible");
-        document
-          .getElementById("add-bookmark-button")
-          .classList.add("completed-button");
-        document.getElementById("file-input").classList.add("invisible");
-        document.getElementById("bookmark-button").classList.add("invisible");
-        document.getElementById("search-icon").classList.add("invisible");
-        document.getElementById("export-button").classList.add("invisible");
-        document.getElementById("clear-all-button").classList.add("invisible");
-
-        setTimeout(() => {
-          setCompleted(false);
-          document
-            .getElementById("add-bookmark-button")
-            .classList.remove("completed-button");
-          document.getElementById("file-input").classList.remove("invisible");
-          document
-            .getElementById("bookmark-button")
-            .classList.remove("invisible");
-          document
-            .getElementById("add-bookmark-button")
-            .classList.add("invisible");
-          document.getElementById("search-icon").classList.remove("invisible");
-          document
-            .getElementById("export-button")
-            .classList.remove("invisible");
-          document
-            .getElementById("export-button")
-            .classList.remove("invisible", "disabled");
-          document
-            .getElementById("clear-all-button")
-            .classList.remove("invisible", "disabled");
-        }, 1000);
-
-        return true;
-      };
-      reader.readAsText(file);
-    }
-  }
+  // IDEA FOR REFACTORING
 
   return (
     <div className="bookmark-wrapper">
       <div className="bookmark-button">
-        <div className="bookmark-input">
-          <div className="bookmark-search">
-            <div className="button-file-input">
-              <div className="button-search-wrapper">
-                <button
-                  className="bookmark-btn disabled"
-                  id="bookmark-button"
-                  onClick={() => toggleAddingBookmark()}
-                >
-                  Add bookmark
-                </button>
-                <LiaSearchSolid
-                  className="search-icon"
-                  id="search-icon"
-                  onClick={() =>
-                    setSearchBookmarks(showSearchInput(true, stateBookmarks))
-                  }
-                />
-              </div>
-              <div className="import-export-block" id="import-export-block">
-                <FileInput onChange={handleFileUpload} />
-                <div className="impot-export-row">
-                  <button
-                    className="bookmark-btn reset-all-button"
-                    id="clear-all-button"
-                    onClick={() => {
-                      localStorage.clear();
-                      setSearchBookmarks([]);
-                      dispatch(addItem("[]"));
-                    }}
-                  >
-                    Clear all
-                  </button>
-                  <ExportButton
-                    data={handleDataForExport(stateBookmarks)}
-                    fileName={new Date().getTime()}
-                  />
-                </div>
-              </div>
+        <div className="button-file-input">
+          <input
+            className="name-input search-input"
+            placeholder="Search"
+            onChange={(e) =>
+              setSearchBookmarks(handleSearch(e, stateBookmarks))
+            }
+            ref={searchInput}
+            disabled={inputDisabled}
+            id="search-input"
+          />
+
+          <button
+            className="bookmark-btn disabled"
+            id="bookmark-button"
+            onClick={toggleAddingBookmark}
+          >
+            Add bookmark
+          </button>
+
+          <div className="import-export-block" id="import-export-block">
+            <FileInput
+              setCompleted={setCompleted}
+              setStateBookmarks={setStateBookmarks}
+              setSearchBookmarks={setSearchBookmarks}
+              stateBookmarks={stateBookmarks}
+              setInputDisabled={setInputDisabled}
+            />
+            <div className="impot-export-row">
+              <button
+                className="bookmark-btn reset-all-button"
+                id="clear-all-button"
+                onClick={clearAllBookmarks}
+              >
+                Clear all
+              </button>
+              <ExportButton
+                data={handleDataForExport(stateBookmarks)}
+                fileName={new Date().getTime()}
+              />
             </div>
           </div>
           <div className="name-input-wrapper">
-            <MdCancel
-              className="icon cancel-icon search-cancel invisible"
-              id="search-cancel"
-              onClick={() => dispatch(addItem(showSearchInput(false)))}
-            />
-            <input
-              className="name-input search-input invisible"
-              placeholder="Search"
-              onChange={(e) =>
-                setSearchBookmarks(handleSearch(e, stateBookmarks))
-              }
-              id="search-input"
-            />
             <MdCancel
               className="icon cancel-icon search-cancel invisible"
               id="add-bookmark-cancel"
@@ -339,9 +239,7 @@ export const BookmarkMenu = () => {
                       document
                         .getElementById("file-input")
                         .classList.remove("invisible");
-                      document
-                        .getElementById("search-icon")
-                        .classList.remove("invisible");
+
                       document
                         .getElementById("export-button")
                         .classList.remove("invisible");
@@ -377,9 +275,7 @@ export const BookmarkMenu = () => {
                     document
                       .getElementById("file-input")
                       .classList.remove("invisible");
-                    document
-                      .getElementById("search-icon")
-                      .classList.remove("invisible");
+
                     document
                       .getElementById("export-button")
                       .classList.remove("invisible");
@@ -421,19 +317,29 @@ export const BookmarkMenu = () => {
         >
           <h2>No bookmarks</h2>
         </div>
-
-        <div className="list-length-block">
-          <span
-            className="length-bookmarks-block invisible"
-            id="bookmarks-length"
-          >
-            <p className="bookmarks-length-text">Bookmarks:</p>
-            <p className="bookmarks-length">{stateBookmarks.length}</p>
-          </span>
-          <ul className="list scrollable" id="list" ref={listRef}>
-            {renderList()}
-          </ul>
-        </div>
+        {stateBookmarks.length !== 0 ? (
+          <div className="list-length-block">
+            <span className="length-bookmarks-block" id="bookmarks-length">
+              <p className="bookmarks-length-text">Bookmarks:</p>
+              <p className="bookmarks-length">
+                {searchBookmarks.length > 0 ? (
+                  searchBookmarks.length
+                ) : (
+                  <>
+                    {document.activeElement === searchInput.current
+                      ? 0
+                      : stateBookmarks.length}
+                  </>
+                )}
+              </p>
+            </span>
+            <ul className="list scrollable" id="list" ref={listRef}>
+              {renderList()}
+            </ul>
+          </div>
+        ) : (
+          <ul className="invisible-list" id="list" ref={listRef}></ul>
+        )}
       </div>
     </div>
   );

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { encodeUrl, isValid } from "../hepler";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { areInputsClear } from "../hepler";
-import "../styles/inputs.css";
-import "../styles/form.css";
-import "../styles/bookmark.css";
+import "../assets/styles/inputs.css";
+import "../assets/styles/form.css";
+import "../assets/styles/bookmark.css";
 
 export const Data = () => {
   const [copied, setCopied] = useState(null);

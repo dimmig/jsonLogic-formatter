@@ -11,8 +11,20 @@ code {
     monospace;
 }
 
+.invisible {
+  display: none;
+}
+
 .main-app {
   width: 70vw;
+}
+
+.full-screen {
+  width: 100vw;
+}
+
+.full-width-textarea {
+  width: 90vw;
 }
 
 .application {
@@ -33,13 +45,21 @@ code {
   margin-bottom: 1rem;
 }
 
+.active-part {
+  box-shadow: 0 0 10px #85bafa;
+}
+
 .result-block {
   display: flex;
   justify-content: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
   .bookmarks-part {
+    display: none;
+  }
+
+  .show-tip {
     display: none;
   }
 

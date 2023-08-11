@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { AiOutlineCopy, AiOutlineCheckCircle } from "react-icons/ai";
 import { NOT_VALID_DATA, NOT_VALID_RULE } from "../../logic/constants";
 import { scrollToBottom } from "../hepler";
-import "../styles/inputs.css";
+import "../assets/styles/inputs.css";
 
 export const Result = (props) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -96,6 +96,11 @@ export const Result = (props) => {
 
     const copyButton = document.getElementById("copy-button");
     copyButton.classList.add("invisible");
+
+    const bookmarksList = document.getElementById("list");
+    if (bookmarksList && !bookmarksList.classList.contains("invisible-list")) {
+      bookmarksList.classList.add("max-list-height");
+    }
     scrollToBottom(resultRef);
   }
 

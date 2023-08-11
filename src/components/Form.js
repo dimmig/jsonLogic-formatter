@@ -5,7 +5,7 @@ import { Data } from "./subcomponents/Data";
 import { Rule } from "./subcomponents/Rule";
 import { apply } from "json-logic-js";
 import { areInputsClear, renderDecodedUrl } from "./hepler";
-import "./styles/form.css";
+import "./assets/styles/form.css";
 
 export const Forms = ({ setParsedJson }) => {
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from "react";
-import "../styles/inputs.css";
-import "../styles/bookmark.css";
+import "../assets/styles/inputs.css";
+import "../assets/styles/bookmark.css";
 
 export const ExportButton = ({ data, fileName }) => {
   function handleExport() {
@@ -14,7 +14,7 @@ export const ExportButton = ({ data, fileName }) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = fileName;
+    a.download = fileName + ".json";
     a.click();
     URL.revokeObjectURL(url);
   }

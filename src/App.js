@@ -13,11 +13,11 @@ function App() {
   return (
     <div>
       <div className="application">
-        <div className="bookmarks-part">
+        <div className="bookmarks-part" id="bookmarks-part">
           <BookmarksHeader />
           <BookmarkMenu />
         </div>
-        <div className="main-app">
+        <div className="main-app" id="main-app">
           <Header />
           <div className="forms">
             <Forms setParsedJson={setParsedJson} />

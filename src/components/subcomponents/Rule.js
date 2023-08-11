@@ -1,7 +1,7 @@
 import React from "react";
 import { isValid } from "../hepler";
 import { EXAMPLE_DATA, EXAMPLE_RULE } from "../../logic/constants";
-import "../styles/inputs.css";
+import "../assets/styles/inputs.css";
 
 export const Rule = () => {
   function save(rule, data) {

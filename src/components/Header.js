@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Typed from "typed.js";
-import "./styles/header.css";
+import { toggleBookmarksBlock } from "./bookmarks/bookmarksHelper";
+import "./assets/styles/header.css";
 
 export const Header = () => {
   const typeRef1 = useRef(null);
@@ -24,6 +25,12 @@ export const Header = () => {
 
   return (
     <header className="header">
+      <span
+        className="hide-tip show-tip invisible"
+        onClick={toggleBookmarksBlock}
+      >
+        <p className="show-bookmarks">Show</p>
+      </span>
       <div>
         <div>
           <span className="auto-type">Json-logic validator</span>

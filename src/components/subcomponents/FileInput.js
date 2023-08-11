@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
-import "../styles/bookmark.css";
-import "../styles/inputs.css";
+import "../assets/styles/bookmark.css";
+import "../assets/styles/inputs.css";
+import { addBookmark } from "../bookmarks/bookmarksHelper";
 
-export const FileInput = ({ onChange }) => {
+export const FileInput = ({
+  setCompleted,
+  setStateBookmarks,
+  setSearchBookmarks,
+  stateBookmarks,
+  setInputDisabled,
+}) => {
   const [fileName, setFileName] = useState(null);
   const [fileData, setFileData] = useState(null);
   const [arrayLength, setArrayLength] = useState(null);
 
   useEffect(() => {
     if (fileData) {
-      // Read the content of the file
       const reader = new FileReader();
       reader.readAsText(fileData);
 
@@ -17,11 +23,9 @@ export const FileInput = ({ onChange }) => {
         try {
           const jsonData = JSON.parse(reader.result);
           if (Array.isArray(jsonData)) {
-            // Set the array length in the state
             setArrayLength(jsonData.length);
           }
         } catch (error) {
-          // Handle any JSON parsing errors
           console.error("Error parsing JSON file:", error);
         }
       };
@@ -32,16 +36,79 @@ export const FileInput = ({ onChange }) => {
     const file = e.target.files[0];
     setFileName(file ? file.name : "");
     setFileData(file);
-    document.getElementById("label").classList.add("disabled-file-input");
-    document.getElementById("import-export-block").classList.add("flex-column");
+    handleFileUpload(file);
   }
 
-  function handleReset() {
-    setFileName(null);
-    document.getElementById("label").classList.remove("disabled-file-input");
-    document
-      .getElementById("import-export-block")
-      .classList.remove("flex-column");
+  function handleFileUpload(file) {
+    let resultedBookmarks = [];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileContent = JSON.parse(event.target.result);
+
+        for (const object of fileContent) {
+          const bookmarkName = object.subpart + object.section;
+          resultedBookmarks = addBookmark(stateBookmarks, bookmarkName, object);
+          if (!resultedBookmarks.length) {
+            resultedBookmarks = [...resultedBookmarks, ...stateBookmarks];
+          }
+        }
+        setCompleted(true);
+        setInputDisabled(false);
+        setStateBookmarks(resultedBookmarks);
+        setSearchBookmarks(resultedBookmarks)
+
+        localStorage.setItem(
+          "bookmarks-before-search",
+          JSON.stringify(resultedBookmarks)
+        );
+        localStorage.setItem("bookmarks", JSON.stringify(resultedBookmarks));
+
+        document
+          .getElementById("add-bookmark-button")
+          .classList.remove("invisible");
+        document
+          .getElementById("add-bookmark-button")
+          .classList.add("completed-button");
+        document.getElementById("file-input").classList.add("invisible");
+        document.getElementById("bookmark-button").classList.add("invisible");
+        document.getElementById("export-button").classList.add("invisible");
+        document.getElementById("clear-all-button").classList.add("invisible");
+        document.getElementById("search-input").value = "";
+
+        setTimeout(() => {
+          setCompleted(false);
+          document
+            .getElementById("add-bookmark-button")
+            .classList.remove("completed-button");
+          document.getElementById("file-input").classList.remove("invisible");
+          document
+            .getElementById("bookmark-button")
+            .classList.remove("invisible");
+          document
+            .getElementById("add-bookmark-button")
+            .classList.add("invisible");
+          document
+            .getElementById("export-button")
+            .classList.remove("invisible");
+          document
+            .getElementById("export-button")
+            .classList.remove("invisible", "disabled");
+          document
+            .getElementById("clear-all-button")
+            .classList.remove("invisible", "disabled");
+          document.getElementById("label").classList.add("disabled-file-input");
+          document
+            .getElementById("import-export-block")
+            .classList.add("flex-column");
+        }, 1000);
+
+        return true;
+      };
+
+      reader.readAsText(file);
+    }
   }
 
   return (
@@ -69,20 +136,6 @@ export const FileInput = ({ onChange }) => {
         className="file-input"
         accept=".json"
       />
-
-      {fileName && (
-        <div className="file-input-buttons">
-          <button
-            onClick={() => onChange(fileData)}
-            className="file-input-btn upload-button"
-          >
-            Upload
-          </button>
-          <button onClick={handleReset} className="file-input-btn reset-button">
-            Reset
-          </button>
-        </div>
-      )}
     </div>
   );
 };
