@@ -4,10 +4,12 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import { MdCancel } from "react-icons/md";
 import {
   addBookmark,
+  clearAllBookmarks,
   deleteBookmark,
   editBookmark,
   handleDataForExport,
   handleSearch,
+  onTimeoutEnd,
   removeNameInput,
   toggleAddingBookmark,
 } from "./bookmarksHelper";
@@ -21,7 +23,6 @@ export const BookmarkMenu = () => {
   const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
 
   const listRef = useRef(null);
-  const errorRef = useRef(null);
   const cancelInput = useRef(null);
   const searchInput = useRef(null);
   const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
@@ -50,14 +51,6 @@ export const BookmarkMenu = () => {
       document.getElementById("export-button").classList.add("disabled");
     }
   }, [stateBookmarks, searchBookmarks]);
-
-  function clearAllBookmarks() {
-    if (window.confirm("Do you want to delete ALL the bookmars")) {
-      localStorage.clear();
-      setSearchBookmarks([]);
-      setStateBookmarks([]);
-    }
-  }
 
   function renderList() {
     if (stateBookmarks === null) {
@@ -88,6 +81,7 @@ export const BookmarkMenu = () => {
           <li>
             <div className="input-open-block">
               <input
+                title={name}
                 defaultValue={name}
                 className="bookmark-name-input"
                 id={inputId}
@@ -146,6 +140,11 @@ export const BookmarkMenu = () => {
     if (resultedBookmarks !== stateBookmarks) {
       setCompleted(true);
       document
+        .getElementById("name-input-wrapper")
+        .classList.remove("invisible");
+      document.getElementById("name-input").classList.add("invisible");
+      document.getElementById("add-bookmark-cancel").classList.add("invisible");
+      document
         .getElementById("add-bookmark-button")
         .classList.add("completed-button");
 
@@ -156,12 +155,10 @@ export const BookmarkMenu = () => {
     return false;
   }
 
-  // IDEA FOR REFACTORING
-
   return (
     <div className="bookmark-wrapper">
       <div className="bookmark-button">
-        <div className="button-file-input">
+        <div className="button-file-input" id="button-file-input">
           <input
             className="name-input search-input"
             placeholder="Search"
@@ -189,11 +186,13 @@ export const BookmarkMenu = () => {
               stateBookmarks={stateBookmarks}
               setInputDisabled={setInputDisabled}
             />
-            <div className="impot-export-row">
+            <div className="import-export-row">
               <button
                 className="bookmark-btn reset-all-button"
                 id="clear-all-button"
-                onClick={clearAllBookmarks}
+                onClick={() =>
+                  clearAllBookmarks(setSearchBookmarks, setStateBookmarks)
+                }
               >
                 Clear all
               </button>
@@ -203,120 +202,58 @@ export const BookmarkMenu = () => {
               />
             </div>
           </div>
-          <div className="name-input-wrapper">
-            <MdCancel
-              className="icon cancel-icon search-cancel invisible"
-              id="add-bookmark-cancel"
-              onClick={removeNameInput}
-            />
-            <input
-              className="name-input invisible"
-              id="name-input"
-              placeholder="Type your name"
-              value={bookmarkName !== null ? bookmarkName : ""}
-              onChange={(e) => setBookmarkName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  if (validateAndAddBookmark(e)) {
-                    document
-                      .getElementById("bookmark-button")
-                      .classList.add("invisible");
-                    document
-                      .getElementById("add-bookmark-cancel")
-                      .classList.add("invisible");
-
-                    setTimeout(() => {
-                      document
-                        .getElementById("add-bookmark-button")
-                        .classList.remove("completed-button");
-                      document
-                        .getElementById("add-bookmark-button")
-                        .classList.add("invisible");
-                      setCompleted(false);
-                      document
-                        .getElementById("bookmark-button")
-                        .classList.remove("invisible");
-                      document
-                        .getElementById("file-input")
-                        .classList.remove("invisible");
-
-                      document
-                        .getElementById("export-button")
-                        .classList.remove("invisible");
-                      document
-                        .getElementById("clear-all-button")
-                        .classList.remove("invisible");
-                    }, 1000);
-                  }
-                }
-              }}
-            />
-
-            <button
-              className="bookmark-btn invisible"
-              id="add-bookmark-button"
-              onClick={(e) => {
+        </div>
+        <div className="name-input-wrapper invisible" id="name-input-wrapper">
+          <MdCancel
+            className="icon cancel-icon search-cancel"
+            id="add-bookmark-cancel"
+            onClick={removeNameInput}
+          />
+          <input
+            className="name-input"
+            id="name-input"
+            placeholder="Type your name"
+            value={bookmarkName !== null ? bookmarkName : ""}
+            onChange={(e) => setBookmarkName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
                 if (validateAndAddBookmark(e)) {
-                  document
-                    .getElementById("add-bookmark-cancel")
-                    .classList.add("invisible");
                   setTimeout(() => {
                     setCompleted(false);
-                    if (document.getElementById("completed-icon"))
-                      document
-                        .getElementById("add-bookmark-button")
-                        .classList.remove("completed-button");
-                    document
-                      .getElementById("add-bookmark-button")
-                      .classList.add("invisible");
-                    document
-                      .getElementById("bookmark-button")
-                      .classList.remove("invisible");
-                    document
-                      .getElementById("file-input")
-                      .classList.remove("invisible");
-
-                    document
-                      .getElementById("export-button")
-                      .classList.remove("invisible");
-                    document
-                      .getElementById("clear-all-button")
-                      .classList.remove("invisible");
+                    onTimeoutEnd();
                   }, 1000);
                 }
-              }}
-            >
-              {completed ? (
-                <span className="completed-span">
-                  Added
-                  <AiOutlineCheckCircle
-                    style={{ width: "2rem", height: "2rem" }}
-                    id="completed-icon"
-                  />
-                </span>
-              ) : (
-                "Add"
-              )}
-            </button>
-          </div>
-        </div>
+              }
+            }}
+          />
 
-        <div
-          className="error bookmark-error invisible"
-          id="bookmark-error"
-          ref={errorRef}
-        >
-          <h2>No bookmarks</h2>
+          <button
+            className="bookmark-btn"
+            id="add-bookmark-button"
+            onClick={(e) => {
+              if (validateAndAddBookmark(e)) {
+                setTimeout(() => {
+                  setCompleted(false);
+                  onTimeoutEnd();
+                }, 1000);
+              }
+            }}
+          >
+            {completed ? (
+              <span className="completed-span">
+                Added
+                <AiOutlineCheckCircle
+                  style={{ width: "2rem", height: "2rem" }}
+                  id="completed-icon"
+                />
+              </span>
+            ) : (
+              "Add"
+            )}
+          </button>
         </div>
       </div>
       <div className="bookmark-block">
-        <div
-          className="error bookmark-error invisible"
-          id="bookmark-error"
-          ref={errorRef}
-        >
-          <h2>No bookmarks</h2>
-        </div>
         {stateBookmarks.length !== 0 ? (
           <div className="list-length-block">
             <span className="length-bookmarks-block" id="bookmarks-length">

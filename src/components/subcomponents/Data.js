@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { encodeUrl, isValid } from "../hepler";
+import { isValid } from "../hepler";
 import { AiOutlineCheckCircle } from "react-icons/ai";
-import { areInputsClear } from "../hepler";
+import { renderEncodingUrl } from "./subcomponentsHelper";
 import "../assets/styles/inputs.css";
 import "../assets/styles/form.css";
 import "../assets/styles/bookmark.css";
@@ -16,32 +16,7 @@ export const Data = () => {
         <button
           className="default-button url-button disabled"
           id="url-button"
-          onClick={() => {
-            const rule = sessionStorage.getItem("rule-data");
-            const data = sessionStorage.getItem("data");
-            const bookmarkName = new URL(window.location.href).searchParams.get(
-              "bookmarkName"
-            );
-            let url;
-            if (rule !== null && data !== null && !areInputsClear()) {
-              if (bookmarkName) {
-                url = encodeUrl(rule, data, bookmarkName);
-              } else {
-                url = encodeUrl(rule, data);
-              }
-
-              navigator.clipboard.writeText(url);
-              document.getElementById("url-button").classList.add("completed");
-              setCopied(true);
-
-              setTimeout(() => {
-                setCopied(false);
-                document
-                  .getElementById("url-button")
-                  .classList.remove("completed");
-              }, 1000);
-            }
-          }}
+          onClick={() => renderEncodingUrl(setCopied)}
         >
           {copied ? (
             <span className="url-button-wrapper">

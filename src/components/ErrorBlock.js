@@ -1,6 +1,6 @@
 import React from "react";
-import "./assets/styles/inputs.css";
 import { NOT_VALID_RULE } from "../logic/constants";
+import "./assets/styles/inputs.css";
 
 export const ErrorBlock = (props) => {
   return (

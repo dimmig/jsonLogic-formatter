@@ -1,13 +1,9 @@
 import React from "react";
 import { isValid } from "../hepler";
-import { EXAMPLE_DATA, EXAMPLE_RULE } from "../../logic/constants";
+import { renderExampleData } from "./subcomponentsHelper";
 import "../assets/styles/inputs.css";
 
 export const Rule = () => {
-  function save(rule, data) {
-    sessionStorage.setItem("rule-data", JSON.stringify(rule));
-    sessionStorage.setItem("data", JSON.stringify(data));
-  }
 
   return (
     <div>
@@ -15,21 +11,7 @@ export const Rule = () => {
         <h2 className="heading">Rule</h2>
         <button
           className="default-button test-button"
-          onClick={() => {
-            document.getElementById("rule-textarea").value = EXAMPLE_RULE;
-            document.getElementById("data-textarea").value = EXAMPLE_DATA;
-
-            if (!window.location.href.includes("bookmarkName")) {
-              document
-                .getElementById("bookmark-button")
-                .classList.remove("disabled");
-              document
-                .getElementById("url-button")
-                .classList.remove("disabled");
-            }
-
-            save(EXAMPLE_RULE, EXAMPLE_DATA);
-          }}
+          onClick={renderExampleData}
         >
           Example data
         </button>

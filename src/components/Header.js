@@ -4,23 +4,19 @@ import { toggleBookmarksBlock } from "./bookmarks/bookmarksHelper";
 import "./assets/styles/header.css";
 
 export const Header = () => {
-  const typeRef1 = useRef(null);
+  const typeRef = useRef(null);
 
   useEffect(() => {
-    const hasAnimationPlayed = sessionStorage.getItem("animationPlayed");
+    const typed_1 = new Typed(typeRef.current, {
+      strings: ["easier", "better", "faster"],
+      typeSpeed: 50,
+      backSpeed: 20,
+      cursorChar: "",
+    });
 
-    if (!hasAnimationPlayed) {
-      const typed_1 = new Typed(typeRef1.current, {
-        strings: ["easier", "better", "faster"],
-        typeSpeed: 50,
-        backSpeed: 20,
-        cursorChar: "",
-      });
-
-      return () => {
-        typed_1.destroy();
-      };
-    }
+    return () => {
+      typed_1.destroy();
+    };
   }, []);
 
   return (
@@ -28,16 +24,15 @@ export const Header = () => {
       <span
         className="hide-tip show-tip invisible"
         onClick={toggleBookmarksBlock}
-      >
-        <p className="show-bookmarks">Show</p>
-      </span>
+        title="Show"
+      ></span>
       <div>
         <div>
           <span className="auto-type">Json-logic validator</span>
         </div>
         <div className="sub-title">
           <span className="auto-type subtext">Validate your code</span>
-          <span ref={typeRef1} className="auto-type subtext colored"></span>
+          <span ref={typeRef} className="auto-type subtext colored"></span>
         </div>
       </div>
     </header>

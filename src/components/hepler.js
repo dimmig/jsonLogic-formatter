@@ -1,3 +1,8 @@
+import { apply } from "json-logic-js";
+import { NOT_VALID_OPTIONS, VALID_OPTIONS } from "../logic/constants";
+import { formatJSON } from "../logic/formatter/formatter";
+import { validate } from "../logic/validator";
+
 export const isValid = (type, jsonStr) => {
   try {
     JSON.parse(jsonStr);
@@ -32,27 +37,15 @@ export const areInputsFilled = () => {
   );
 };
 
-export const oneInputClear = () => {
-  return (
-    document.getElementById("rule-textarea").value.length === 0 ||
-    document.getElementById("data-textarea").value.length === 0
-  );
-};
-
 export const renderDecodedUrl = () => {
   const url = new URL(window.location.href);
-  let decodedRule;
-  let decodedData;
-  if (!url.searchParams.get("rule")) {
-    decodedRule = "";
-    decodedData = atob(url.searchParams.get("data"));
-  } else if (!url.searchParams.get("data")) {
-    decodedData = "";
-    decodedRule = atob(url.searchParams.get("rule"));
-  } else {
-    decodedRule = atob(url.searchParams.get("rule"));
-    decodedData = atob(url.searchParams.get("data"));
-  }
+
+  const decodedRule = url.searchParams.get("rule")
+    ? atob(url.searchParams.get("rule"))
+    : "";
+  const decodedData = url.searchParams.get("data")
+    ? atob(url.searchParams.get("data"))
+    : "";
 
   save(decodedRule, decodedData);
 
@@ -111,12 +104,62 @@ export const encodeUrl = (
   return url;
 };
 
+export const renderValidatedResult = (setParsedJson) => {
+  let validatedData = validate(
+    JSON.parse(sessionStorage.getItem("rule-data")),
+    JSON.parse(sessionStorage.getItem("data"))
+  );
+
+  if (areInputsClear()) {
+    setParsedJson(
+      formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
+    );
+    return;
+  }
+
+  setParsedJson(
+    formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), validatedData)
+  );
+  const resultElement = document.getElementById("result-p");
+
+  if (resultElement !== null && validatedData) {
+    const ruleData = JSON.parse(sessionStorage.getItem("rule-data"));
+    const jsonData = JSON.parse(sessionStorage.getItem("data"));
+    const isValid = fullValidation(ruleData, jsonData);
+
+    const animationOptions = isValid ? VALID_OPTIONS : NOT_VALID_OPTIONS;
+    const resultClassToAdd = isValid ? "green-border" : "red-border";
+    const resultClassToRemove = isValid ? "red-border" : "green-border";
+
+    resultElement.animate(animationOptions, { duration: 1000 });
+
+    resultElement.classList.remove(resultClassToRemove);
+    resultElement.classList.add(resultClassToAdd);
+  }
+};
+
+export const renderFormattedResult = (setParsedJson) => {
+  if (areInputsClear()) {
+    setParsedJson(
+      formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
+    );
+    return;
+  }
+  setParsedJson(
+    formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), false)
+  );
+};
+
 export const scrollToBottom = (ref) => {
   if (ref.current) {
     ref.current.scrollIntoView({
       behavior: "smooth",
     });
   }
+};
+
+export const fullValidation = (rule, data) => {
+  return apply(JSON.parse(rule), JSON.parse(data));
 };
 
 function filterData(rule, data) {
@@ -139,6 +182,11 @@ function filterData(rule, data) {
   return result;
 }
 
+export function save(rule, data) {
+  sessionStorage.setItem("rule-data", JSON.stringify(rule));
+  sessionStorage.setItem("data", JSON.stringify(data));
+}
+
 function removeUrlParams(url) {
   url.searchParams.delete("rule");
   url.searchParams.delete("data");
@@ -147,10 +195,7 @@ function removeUrlParams(url) {
   return url;
 }
 
-function save(rule, data) {
-  sessionStorage.setItem("rule-data", JSON.stringify(rule));
-  sessionStorage.setItem("data", JSON.stringify(data));
-}
+
 
 function isSaved() {
   return (

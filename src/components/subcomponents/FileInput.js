@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { readFile } from "./subcomponentsHelper";
+import { addBookmark, onTimeoutEnd } from "../bookmarks/bookmarksHelper";
 import "../assets/styles/bookmark.css";
 import "../assets/styles/inputs.css";
-import { addBookmark } from "../bookmarks/bookmarksHelper";
 
 export const FileInput = ({
   setCompleted,
@@ -15,29 +16,8 @@ export const FileInput = ({
   const [arrayLength, setArrayLength] = useState(null);
 
   useEffect(() => {
-    if (fileData) {
-      const reader = new FileReader();
-      reader.readAsText(fileData);
-
-      reader.onload = () => {
-        try {
-          const jsonData = JSON.parse(reader.result);
-          if (Array.isArray(jsonData)) {
-            setArrayLength(jsonData.length);
-          }
-        } catch (error) {
-          console.error("Error parsing JSON file:", error);
-        }
-      };
-    }
+    readFile(fileData, setArrayLength);
   }, [fileData]);
-
-  function handleFileChange(e) {
-    const file = e.target.files[0];
-    setFileName(file ? file.name : "");
-    setFileData(file);
-    handleFileUpload(file);
-  }
 
   function handleFileUpload(file) {
     let resultedBookmarks = [];
@@ -57,7 +37,7 @@ export const FileInput = ({
         setCompleted(true);
         setInputDisabled(false);
         setStateBookmarks(resultedBookmarks);
-        setSearchBookmarks(resultedBookmarks)
+        setSearchBookmarks(resultedBookmarks);
 
         localStorage.setItem(
           "bookmarks-before-search",
@@ -66,38 +46,21 @@ export const FileInput = ({
         localStorage.setItem("bookmarks", JSON.stringify(resultedBookmarks));
 
         document
-          .getElementById("add-bookmark-button")
+          .getElementById("name-input-wrapper")
           .classList.remove("invisible");
         document
           .getElementById("add-bookmark-button")
           .classList.add("completed-button");
-        document.getElementById("file-input").classList.add("invisible");
-        document.getElementById("bookmark-button").classList.add("invisible");
-        document.getElementById("export-button").classList.add("invisible");
-        document.getElementById("clear-all-button").classList.add("invisible");
+        document.getElementById("name-input").classList.add("invisible");
+        document
+          .getElementById("add-bookmark-cancel")
+          .classList.add("invisible");
+        document.getElementById("button-file-input").classList.add("invisible");
         document.getElementById("search-input").value = "";
 
         setTimeout(() => {
           setCompleted(false);
-          document
-            .getElementById("add-bookmark-button")
-            .classList.remove("completed-button");
-          document.getElementById("file-input").classList.remove("invisible");
-          document
-            .getElementById("bookmark-button")
-            .classList.remove("invisible");
-          document
-            .getElementById("add-bookmark-button")
-            .classList.add("invisible");
-          document
-            .getElementById("export-button")
-            .classList.remove("invisible");
-          document
-            .getElementById("export-button")
-            .classList.remove("invisible", "disabled");
-          document
-            .getElementById("clear-all-button")
-            .classList.remove("invisible", "disabled");
+          onTimeoutEnd();
           document.getElementById("label").classList.add("disabled-file-input");
           document
             .getElementById("import-export-block")
@@ -109,6 +72,13 @@ export const FileInput = ({
 
       reader.readAsText(file);
     }
+  }
+
+  function handleFileChange(e) {
+    const file = e.target.files[0];
+    setFileName(file ? file.name : "");
+    setFileData(file);
+    handleFileUpload(file);
   }
 
   return (

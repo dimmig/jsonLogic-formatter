@@ -44,7 +44,7 @@ function createItems(vars) {
     if (typeof item === "number") {
       return item;
     } else {
-      return `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>"${item}"</span>}`;
+      return `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>"${item}"</span>}`; // data with tooltip
     }
   });
 }
@@ -52,6 +52,7 @@ function createItems(vars) {
 function createResponsiveItem(obj, status, lastBrace = false) {
   const vars = [];
   if (typeof obj[1] === "object" && typeof obj[0] === "object") {
+    // [{"var":"MaxValue"},{"var":"Increase"},0.75,1]
     if (obj[1].var) {
       vars.push(obj[1].var);
     } else {
@@ -79,6 +80,7 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       Object.keys(obj[1])[0]
     )}:${data}</span>\n`;
   } else if (typeof obj[0] === "object" && typeof obj[1] !== "object") {
+    // [{"-":[{"var":"PreviousStartAirportTZOffset"},{"var":"PreviousEndAirportTZOffset"}]},4]
     if (Array.isArray(Object.values(obj[0])[0])) {
       for (const innerObj of Object.values(obj[0])[0]) {
         vars.push(innerObj.var ? innerObj.var : innerObj);
@@ -90,11 +92,43 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       }${lastBrace ? "]}" : "]},"}</span>\n`;
     }
   }
+
   return `<span class="${status}">[{"var":"<span class="var-name">${
+    //	{"==":[{"var":"IsSingleUser"},true]},
     obj[0].var
   }</span>"},${JSON.stringify(obj[1])}${
     lastBrace ? "]}" : "]},"
   }${createTooltip(obj[0].var)}</span>\n`;
+}
+
+function addHtml(
+  validatedData,
+  result,
+  objItem,
+  stringifiedItem,
+  errHtml,
+  nesting,
+  isLast
+) {
+  if (validatedData[objItem[0].var] === true) {
+    result += createResponsiveItem(objItem, "green", isLast ? true : false);
+  } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
+    result += `${stringifiedItem}},${errHtml}\n`;
+  } else {
+    if (validatedData[objItem[0].var].length) {
+      if (validatedData[objItem[0].var][0]) {
+        result += createResponsiveItem(objItem, "green", isLast ? true : false);
+      } else {
+        result += createResponsiveItem(objItem, "red", isLast ? true : false);
+      }
+      validatedData[objItem[0].var].shift();
+      nesting--;
+      return result;
+    }
+
+    result += createResponsiveItem(objItem, "red", isLast ? true : false);
+  }
+  return result;
 }
 
 export function goThroughInterface(
@@ -150,12 +184,13 @@ export function goThroughInterface(
             result += symbolGenerator(nesting, "\t") + LESS;
             break;
           default:
-            console.error("Something went wrong");
+            console.error("UNKNOWN SIGN");
         }
 
         const stringifiedItem = JSON.stringify(objItem);
         const errHtml = `<div class="default">No data</div>`;
 
+        // If the last in observed level
         if (i === interfaceData.length - 1) {
           if (!validatedData) {
             result += `${stringifiedItem}}\n`;
@@ -163,24 +198,15 @@ export function goThroughInterface(
             continue;
           }
 
-          if (validatedData[objItem[0].var] === true) {
-            result += createResponsiveItem(objItem, "green", true);
-          } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
-            result += `${stringifiedItem}},${errHtml}\n`;
-          } else {
-            if (validatedData[objItem[0].var].length) {
-              if (validatedData[objItem[0].var][0]) {
-                result += createResponsiveItem(objItem, "green", true);
-              } else {
-                result += createResponsiveItem(objItem, "red", true);
-              }
-              validatedData[objItem[0].var].shift();
-              nesting--;
-              continue;
-            }
-
-            result += createResponsiveItem(objItem, "red", true);
-          }
+          result = addHtml(
+            validatedData,
+            result,
+            objItem,
+            stringifiedItem,
+            errHtml,
+            nesting,
+            true
+          );
           nesting--;
         } else {
           if (!validatedData) {
@@ -189,6 +215,7 @@ export function goThroughInterface(
           }
 
           if (!objItem[0].var && typeof objItem[0] === "object") {
+            // inner case [{{}}]
             const value = Object.values(objItem[0])[0][0];
             if (validatedData[value.var] === true) {
               result += createResponsiveItem(objItem, "green");
@@ -209,22 +236,15 @@ export function goThroughInterface(
             continue;
           }
 
-          if (validatedData[objItem[0].var] === true) {
-            result += createResponsiveItem(objItem, "green");
-          } else if (!validatedData.hasOwnProperty(objItem[0].var)) {
-            result += `${stringifiedItem}},${errHtml}\n`;
-          } else {
-            if (validatedData[objItem[0].var].length) {
-              if (validatedData[objItem[0].var][0]) {
-                result += createResponsiveItem(objItem, "green");
-              } else {
-                result += createResponsiveItem(objItem, "red");
-              }
-              validatedData[objItem[0].var].shift();
-              continue;
-            }
-            result += createResponsiveItem(objItem, "red");
-          }
+          result = addHtml(
+            validatedData,
+            result,
+            objItem,
+            stringifiedItem,
+            errHtml,
+            nesting,
+            false
+          );
         }
       }
     }

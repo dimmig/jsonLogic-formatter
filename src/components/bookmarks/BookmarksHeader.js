@@ -1,7 +1,7 @@
 import React from "react";
+import { toggleBookmarksBlock } from "./bookmarksHelper";
 import "../assets/styles/header.css";
 import "../../index.css";
-import { toggleBookmarksBlock } from "./bookmarksHelper";
 
 export const BookmarksHeader = () => {
   return (

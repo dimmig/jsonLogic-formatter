@@ -4,108 +4,80 @@ export function validate(jsonLogicString, data) {
   }
 
   try {
-    JSON.parse(jsonLogicString);
-    JSON.parse(data);
+    const parsedJson = JSON.parse(jsonLogicString);
+    const parsedData = JSON.parse(data);
+
+    const result = {};
+    let validatedResult;
+
+    for (const [, value] of Object.entries(parsedJson)) {
+      validatedResult = goThroughtObject(value, parsedData, result);
+    }
+    return validatedResult;
   } catch (e) {
     return null;
   }
-
-  const parsedJson = JSON.parse(jsonLogicString);
-  const parsedData = JSON.parse(data);
-
-  const result = {};
-  let res;
-
-  for (const [, value] of Object.entries(parsedJson)) {
-    res = goThroughtObject(value, parsedData, result);
-  }
-  return res;
 }
 
 function goThroughtObject(array, parsedData, result) {
   let comparedValue;
   for (let i = 0; i < array.length; i++) {
-    for (const [k, value] of Object.entries(array[i])) {
-      if (k !== "or" && k !== "and") {
+    for (const [key, value] of Object.entries(array[i])) {
+      const firstValue = value[0];
+      const secondValue = value[1];
+      if (key !== "or" && key !== "and") {
         if (
-          typeof value[1] !== "boolean" &&
-          typeof value[1] !== "number" &&
-          typeof value[1] == "object" &&
-          !value[1].var
+          typeof secondValue !== "boolean" &&
+          typeof secondValue !== "number" &&
+          typeof secondValue === "object" &&
+          !secondValue.var
         ) {
-          let computedValue;
-          for (const [innerKey, innerVal] of Object.entries(value[1])) {
-            if (Array.isArray(innerVal)) {
-              const gotValues = computeArray(innerVal, parsedData);
-              if (gotValues.includes(null)) {
-                continue;
-              }
-              computedValue = computeValue(innerKey, gotValues);
-            }
-          }
+          const computedValue = computingHandler(secondValue, parsedData);
           computedValue || computedValue === 0
             ? (comparedValue = compare(
-                k,
-                parsedData[value[0].var],
+                key,
+                parsedData[firstValue.var],
                 computedValue
               ))
             : (comparedValue = null);
         } else if (
-          typeof value[0] !== "boolean" &&
-          typeof value[0] !== "number" &&
-          typeof value[0] == "object" &&
-          !value[0].var &&
-          typeof value[1] === "number"
+          typeof firstValue !== "boolean" &&
+          typeof firstValue !== "number" &&
+          typeof firstValue === "object" &&
+          typeof secondValue === "number" &&
+          !firstValue.var
         ) {
-          let computedValue;
-          for (const [innerKey, innerVal] of Object.entries(value[0])) {
-            if (Array.isArray(innerVal)) {
-              const gotValues = computeArray(innerVal, parsedData);
-              if (gotValues.includes(null)) {
-                continue;
-              }
-              computedValue = computeValue(innerKey, gotValues);
-            }
-          }
+          const computedValue = computingHandler(firstValue, parsedData);
           computedValue || computedValue === 0
-            ? (comparedValue = compare(k, computedValue, value[1]))
+            ? (comparedValue = compare(key, computedValue, secondValue))
             : (comparedValue = null);
-          for (const innerValue of Object.values(value[0])[0]) {
+
+          for (const innerValue of Object.values(firstValue)[0]) {
             writeResult(result, innerValue.var, comparedValue);
           }
           continue;
-        } else if (typeof value[1] === "object" && !Array.isArray(value[1])) {
-          parsedData.hasOwnProperty(value[0].var)
+        } else if (
+          typeof secondValue === "object" &&
+          !Array.isArray(secondValue)
+        ) {
+          parsedData.hasOwnProperty(firstValue.var)
             ? (comparedValue = compare(
-                k,
-                parsedData[value[0].var],
-                parsedData[value[1].var]
+                key,
+                parsedData[firstValue.var],
+                parsedData[secondValue.var]
               ))
             : (comparedValue = null);
         } else {
-          parsedData.hasOwnProperty(value[0].var)
-            ? (comparedValue = compare(k, parsedData[value[0].var], value[1]))
+          parsedData.hasOwnProperty(firstValue.var)
+            ? (comparedValue = compare(
+                key,
+                parsedData[firstValue.var],
+                secondValue
+              ))
             : (comparedValue = null);
         }
-        if (!result.hasOwnProperty(value[0].var)) {
-          if (comparedValue) {
-            result[value[0].var] = true;
-          } else if (comparedValue !== null) {
-            result[value[0].var] = false;
-          } else {
-            continue;
-          }
-        } else {
-          if (result[value[0].var].length > 1) {
-            comparedValue
-              ? (result[value[0].var] = [...result[value[0].var], true])
-              : (result[value[0].var] = [...result[value[0].var], false]);
-          } else {
-            comparedValue
-              ? (result[value[0].var] = [...[result[value[0].var]], true])
-              : (result[value[0].var] = [...[result[value[0].var]], false]);
-          }
-        }
+
+        writeResult(result, firstValue.var, comparedValue);
 
         continue;
       }
@@ -131,6 +103,18 @@ function writeResult(result, varName, comparedValue) {
       comparedValue
         ? (result[varName] = [...[result[varName]], true])
         : (result[varName] = [...[result[varName]], false]);
+    }
+  }
+}
+
+function computingHandler(value, parsedData) {
+  for (const [innerkey, innerVal] of Object.entries(value)) {
+    if (Array.isArray(innerVal)) {
+      const gotValues = computeArray(innerVal, parsedData);
+      if (gotValues.includes(null)) {
+        continue;
+      }
+      return computeValue(innerkey, gotValues);
     }
   }
 }
