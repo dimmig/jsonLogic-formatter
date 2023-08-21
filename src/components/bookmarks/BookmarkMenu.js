@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ImBin } from "react-icons/im";
-import { AiOutlineCheckCircle } from "react-icons/ai";
+import completedAnimation from "../assets/icons/completedAanimation.json";
 import { MdCancel } from "react-icons/md";
 import {
   addBookmark,
@@ -8,9 +8,9 @@ import {
   deleteBookmark,
   editBookmark,
   handleDataForExport,
-  handleSearch,
   onTimeoutEnd,
   removeNameInput,
+  resizeBookmarksPart,
   toggleAddingBookmark,
 } from "./bookmarksHelper";
 import { FileInput } from "../subcomponents/FileInput";
@@ -18,11 +18,15 @@ import { ExportButton } from "../subcomponents/ExportButton";
 import "../assets/styles/inputs.css";
 import "../assets/styles/bookmark.css";
 import "../assets/styles/form.css";
+import Lottie from "lottie-react";
+import { ANIMATED_OPTIONS } from "../../logic/constants";
+import { BookmarksList } from "./BookmarksList";
 
-export const BookmarkMenu = () => {
+export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
   const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
 
   const listRef = useRef(null);
+  const wrapperRef = useRef(null);
   const cancelInput = useRef(null);
   const searchInput = useRef(null);
   const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
@@ -45,6 +49,8 @@ export const BookmarkMenu = () => {
       setInputDisabled(false);
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
+
+      resizeBookmarksPart();
     } else {
       setInputDisabled(true);
       document.getElementById("clear-all-button").classList.add("disabled");
@@ -76,6 +82,7 @@ export const BookmarkMenu = () => {
       if (name.length === 0) {
         return null;
       }
+
       return (
         <div className="li-block" key={name} ref={cancelInput} id={name}>
           <li>
@@ -86,10 +93,12 @@ export const BookmarkMenu = () => {
                 className="bookmark-name-input"
                 id={inputId}
                 onChange={(e) => setEditedName(e.target.value)}
-                onBlur={() => editValue(inputId, name)}
+                onBlur={() => {
+                  editValue(inputId, name, setHeadingBookmarkName);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    editValue(inputId, name);
+                    editValue(inputId, name, setHeadingBookmarkName);
                   }
                 }}
               />
@@ -112,7 +121,7 @@ export const BookmarkMenu = () => {
     });
   }
 
-  function editValue(inputId, name) {
+  function editValue(inputId, name, setHeadingBookmarkName) {
     if (editedName === null) {
       return;
     }
@@ -122,11 +131,14 @@ export const BookmarkMenu = () => {
     );
     if ((duplicate.length !== 0 && duplicate !== name) || editedName === "") {
       document.getElementById(inputId).value = name;
-
       return;
     }
-    setStateBookmarks(editBookmark(name, stateBookmarks, editedName));
-    setSearchBookmarks(editBookmark(name, stateBookmarks, editedName));
+    setStateBookmarks(
+      editBookmark(name, stateBookmarks, editedName, setHeadingBookmarkName)
+    );
+    setSearchBookmarks(
+      editBookmark(name, stateBookmarks, editedName, setHeadingBookmarkName)
+    );
   }
 
   function validateAndAddBookmark(e) {
@@ -140,13 +152,16 @@ export const BookmarkMenu = () => {
     if (resultedBookmarks !== stateBookmarks) {
       setCompleted(true);
       document
+        .getElementById("add-bookmark-button")
+        .classList.remove("bookmark-btn");
+      document
+        .getElementById("add-bookmark-button")
+        .classList.add("none-border");
+      document
         .getElementById("name-input-wrapper")
         .classList.remove("invisible");
       document.getElementById("name-input").classList.add("invisible");
       document.getElementById("add-bookmark-cancel").classList.add("invisible");
-      document
-        .getElementById("add-bookmark-button")
-        .classList.add("completed-button");
 
       setStateBookmarks(resultedBookmarks);
       setSearchBookmarks(resultedBookmarks);
@@ -156,20 +171,9 @@ export const BookmarkMenu = () => {
   }
 
   return (
-    <div className="bookmark-wrapper">
+    <div className="bookmark-wrapper" ref={wrapperRef} id="bookmark-wrapper">
       <div className="bookmark-button">
         <div className="button-file-input" id="button-file-input">
-          <input
-            className="name-input search-input"
-            placeholder="Search"
-            onChange={(e) =>
-              setSearchBookmarks(handleSearch(e, stateBookmarks))
-            }
-            ref={searchInput}
-            disabled={inputDisabled}
-            id="search-input"
-          />
-
           <button
             className="bookmark-btn disabled"
             id="bookmark-button"
@@ -240,13 +244,7 @@ export const BookmarkMenu = () => {
             }}
           >
             {completed ? (
-              <span className="completed-span">
-                Added
-                <AiOutlineCheckCircle
-                  style={{ width: "2rem", height: "2rem" }}
-                  id="completed-icon"
-                />
-              </span>
+              <Lottie animationData={completedAnimation} loop={false} />
             ) : (
               "Add"
             )}
@@ -255,25 +253,15 @@ export const BookmarkMenu = () => {
       </div>
       <div className="bookmark-block">
         {stateBookmarks.length !== 0 ? (
-          <div className="list-length-block">
-            <span className="length-bookmarks-block" id="bookmarks-length">
-              <p className="bookmarks-length-text">Bookmarks:</p>
-              <p className="bookmarks-length">
-                {searchBookmarks.length > 0 ? (
-                  searchBookmarks.length
-                ) : (
-                  <>
-                    {document.activeElement === searchInput.current
-                      ? 0
-                      : stateBookmarks.length}
-                  </>
-                )}
-              </p>
-            </span>
-            <ul className="list scrollable" id="list" ref={listRef}>
-              {renderList()}
-            </ul>
-          </div>
+          <BookmarksList
+            searchInput={searchInput}
+            stateBookmarks={stateBookmarks}
+            inputDisabled={inputDisabled}
+            searchBookmarks={searchBookmarks}
+            listRef={listRef}
+            setSearchBookmarks={setSearchBookmarks}
+            renderList={renderList}
+          />
         ) : (
           <ul className="invisible-list" id="list" ref={listRef}></ul>
         )}

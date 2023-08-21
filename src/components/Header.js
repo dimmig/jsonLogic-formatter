@@ -1,39 +1,20 @@
-import React, { useEffect, useRef } from "react";
-import Typed from "typed.js";
+import React from "react";
 import { toggleBookmarksBlock } from "./bookmarks/bookmarksHelper";
+import { LuBraces } from "react-icons/lu";
+import menuAnimation from "./assets/icons/menuAnimation.json";
 import "./assets/styles/header.css";
+import Lottie from "lottie-react";
 
 export const Header = () => {
-  const typeRef = useRef(null);
-
-  useEffect(() => {
-    const typed_1 = new Typed(typeRef.current, {
-      strings: ["easier", "better", "faster"],
-      typeSpeed: 50,
-      backSpeed: 20,
-      cursorChar: "",
-    });
-
-    return () => {
-      typed_1.destroy();
-    };
-  }, []);
-
   return (
     <header className="header">
-      <span
-        className="hide-tip show-tip invisible"
-        onClick={toggleBookmarksBlock}
-        title="Show"
-      ></span>
+      <div onClick={toggleBookmarksBlock} className="menu-icon">
+        <Lottie animationData={menuAnimation} loop={false} />
+      </div>
       <div>
-        <div>
-          <span className="auto-type">Json-logic validator</span>
-        </div>
-        <div className="sub-title">
-          <span className="auto-type subtext">Validate your code</span>
-          <span ref={typeRef} className="auto-type subtext colored"></span>
-        </div>
+        <span className="auto-type">
+          <LuBraces />
+        </span>
       </div>
     </header>
   );

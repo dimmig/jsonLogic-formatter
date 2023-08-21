@@ -1,14 +1,21 @@
+html body {
+  min-width: 270px;
+  overflow-x: hidden;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 270px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+  height: fit-content;
 }
 
 .invisible {
@@ -16,15 +23,11 @@ code {
 }
 
 .main-app {
-  width: 70vw;
+  width: 50vw;
 }
 
-.full-screen {
-  width: 100vw;
-}
-
-.full-width-textarea {
-  width: 90vw;
+.short-width-textarea {
+  width: 30vw;
 }
 
 .application {
@@ -34,8 +37,9 @@ code {
 
 .forms {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 
 .bookmarks-part {
@@ -50,8 +54,17 @@ code {
 }
 
 .result-block {
-  display: flex;
-  justify-content: center;
+  width: 50vw;
+  border-top: none;
+  height: 90vh;
+  background-color: #fff;
+  border: 1px solid #68a7ac;
+  border-top: none;
+  transition: all 50ms ease;
+}
+
+.short-result-area {
+  width: 40vw;
 }
 
 @media (max-width: 800px) {
@@ -65,5 +78,22 @@ code {
 
   .main-app {
     width: 100vw;
+  }
+
+  .application {
+    flex-direction: column;
+  }
+
+  .textarea {
+    width: 90vw;
+  }
+
+  .result-block {
+    display: flex;
+    align-self: center;
+    width: 90vw;
+    height: max-content;
+    margin-bottom: 1rem;
+    border: 1px solid #fac585;
   }
 }

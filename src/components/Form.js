@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Data } from "./subcomponents/Data";
 import { Rule } from "./subcomponents/Rule";
 import {
@@ -9,6 +9,8 @@ import {
 import "./assets/styles/form.css";
 
 export const Forms = ({ setParsedJson }) => {
+  const [headingBookmarkName, setHeadingBookmarkName] = useState(null);
+
   useEffect(() => {
     if (
       window.location.href.includes("rule") ||
@@ -16,7 +18,7 @@ export const Forms = ({ setParsedJson }) => {
     ) {
       const url = new URL(window.location.href);
       if (window.location.href.includes("bookmarkName")) {
-        document.title = url.searchParams.get("bookmarkName");
+        setHeadingBookmarkName(url.searchParams.get("bookmarkName"));
       }
 
       renderDecodedUrl();
@@ -27,7 +29,15 @@ export const Forms = ({ setParsedJson }) => {
 
   return (
     <div className="app" id="app">
-      <div className="form">
+      {headingBookmarkName ? (
+        <h1 className="heading">
+          Bookmark: {" "} 
+          <span className="bookmarks-length">{headingBookmarkName}</span>
+        </h1>
+      ) : (
+        <></>
+      )}
+      <div className="form" id="rule-data-inputs">
         <Rule />
         <Data />
       </div>

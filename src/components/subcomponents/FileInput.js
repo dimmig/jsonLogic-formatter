@@ -50,13 +50,12 @@ export const FileInput = ({
           .classList.remove("invisible");
         document
           .getElementById("add-bookmark-button")
-          .classList.add("completed-button");
+          .classList.add("none-border");
         document.getElementById("name-input").classList.add("invisible");
         document
           .getElementById("add-bookmark-cancel")
           .classList.add("invisible");
         document.getElementById("button-file-input").classList.add("invisible");
-        document.getElementById("search-input").value = "";
 
         setTimeout(() => {
           setCompleted(false);
@@ -65,6 +64,9 @@ export const FileInput = ({
           document
             .getElementById("import-export-block")
             .classList.add("flex-column");
+          document
+            .getElementById("add-bookmark-button")
+            .classList.remove("none-border");
         }, 1000);
 
         return true;

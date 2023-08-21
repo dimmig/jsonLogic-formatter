@@ -10,7 +10,7 @@ export function formatJSON(data, validatedData) {
     return NOT_VALID_DATA;
   }
 
-  const parsedData = JSON.parse(data)
+  const parsedData = JSON.parse(data);
 
   if (!parsedData.hasOwnProperty("or") && !parsedData.hasOwnProperty("and")) {
     return NOT_VALID_RULE;

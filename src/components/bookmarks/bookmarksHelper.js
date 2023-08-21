@@ -1,4 +1,4 @@
-import { areInputsFilled, encodeUrl } from "../hepler";
+import { areInputsFilled, encodeUrl, isSaved } from "../hepler";
 
 export const addBookmark = (stateBookmarks, bookmarkName, object) => {
   const rule = document.getElementById("rule-textarea");
@@ -109,8 +109,14 @@ export const editBookmark = (id, stateBookmarks, editedName) => {
     url.searchParams.delete("section");
   }
 
-  if (id === document.title) {
-    document.title = editedName;
+  const currentWindowUrl = new URL(window.location.href);
+  if (
+    currentWindowUrl.searchParams.get("bookmarkName") &&
+    id === currentWindowUrl.searchParams.get("bookmarkName")
+  ) {
+    const href = new URL(window.location.href);
+    href.searchParams.set("bookmarkName", editedName);
+    window.location.replace(href);
   }
 
   if (document.getElementById("search-input").value.length > 0) {
@@ -233,8 +239,8 @@ export const handleDataForExport = (bookmarks) => {
   return result;
 };
 
-export function toggleAddingBookmark() {
-  if (areInputsFilled()) {
+export const toggleAddingBookmark = () => {
+  if (areInputsFilled() && isSaved()) {
     document.getElementById("name-input-wrapper").classList.remove("invisible");
     document.getElementById("name-input").classList.remove("invisible");
     document
@@ -243,26 +249,63 @@ export function toggleAddingBookmark() {
     document.getElementById("button-file-input").classList.add("invisible");
     document.getElementById("name-input").value = "";
   }
-}
+};
 
 export const onTimeoutEnd = () => {
-  document
-    .getElementById("add-bookmark-button")
-    .classList.remove("completed-button");
   document.getElementById("name-input-wrapper").classList.add("invisible");
   document.getElementById("name-input").classList.add("invisible");
   document.getElementById("add-bookmark-cancel").classList.add("invisible");
   document.getElementById("button-file-input").classList.remove("invisible");
+  document
+    .getElementById("add-bookmark-button")
+    .classList.remove("none-border");
+  document.getElementById("add-bookmark-button").classList.add("bookmark-btn");
 };
 
-export function toggleBookmarksBlock() {
-  document.getElementById("bookmarks-part").classList.toggle("invisible");
-  document.getElementById("main-app").classList.toggle("full-screen");
-  document
-    .querySelectorAll(".textarea")
-    .forEach((el) => el.classList.toggle("full-width-textarea"));
-  document.querySelector(".show-tip").classList.toggle("invisible");
-}
+export const toggleBookmarksBlock = () => {
+  const openKeyFrames = [
+    { width: 0, opacity: 0 },
+    { width: "30vw", opacity: 1 },
+  ];
+  const closeKeyFrames = [
+    { width: "30vw", opacity: 1 },
+    { width: 0, opacity: 0 },
+  ];
+  const bookmarks = document.getElementById("bookmarks-part");
+  const resultBlock = document.getElementById("result");
+  if (bookmarks.classList.contains("invisible")) {
+    bookmarks.classList.remove("invisible");
+    bookmarks.animate(openKeyFrames, { duration: 50 });
+    resultBlock.classList.add("short-result-area");
+    document
+      .querySelectorAll(".textarea")
+      .forEach((el) => el.classList.add("short-width-textarea"));
+  } else {
+    bookmarks.animate(closeKeyFrames, { duration: 50 });
+    resultBlock.classList.remove("short-result-area");
+    document
+      .querySelectorAll(".textarea")
+      .forEach((el) => el.classList.remove("short-width-textarea"));
+    setTimeout(() => {
+      bookmarks.classList.add("invisible");
+    }, 50);
+  }
+};
+
+export const resizeBookmarksPart = () => {
+  const list = document.getElementById("list");
+  const formsComponent = document.getElementById("forms");
+  const label = document.getElementById("label");
+
+  if (list && formsComponent) {
+    const bookmarkHeight = formsComponent.clientHeight;
+    if (label.classList.contains("disabled-file-input")) {
+      list.style.height = `${bookmarkHeight - 400}px`;
+    } else {
+      list.style.height = `${bookmarkHeight - 300}px`;
+    }
+  }
+};
 
 function isDublicate(bookmarks, item) {
   for (let i = 0; i < bookmarks.length; i++) {

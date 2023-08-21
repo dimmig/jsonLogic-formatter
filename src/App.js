@@ -1,32 +1,32 @@
 import React, { useState } from "react";
 import { BookmarkMenu } from "./components/bookmarks/BookmarkMenu";
 import { BookmarksHeader } from "./components/bookmarks/BookmarksHeader";
-import { ErrorBlock } from "./components/ErrorBlock";
 import { Forms } from "./components/Form";
 import { Header } from "./components/Header";
 import { Result } from "./components/subcomponents/Result";
+import { ResultHeader } from "./components/subcomponents/ResultHeader";
 import "./index.css";
 
 function App() {
   const [parsedJson, setParsedJson] = useState(null);
 
   return (
-    <div>
+    <div className="main-row">
       <div className="application">
-        <div className="bookmarks-part" id="bookmarks-part">
+        <div className="bookmarks-part invisible" id="bookmarks-part">
           <BookmarksHeader />
           <BookmarkMenu />
         </div>
         <div className="main-app" id="main-app">
           <Header />
-          <div className="forms">
+          <div className="forms" id="forms">
             <Forms setParsedJson={setParsedJson} />
-            <ErrorBlock jsonData={parsedJson} />
           </div>
         </div>
-      </div>
-      <div id="result" className="result-block">
-        <Result jsonData={parsedJson} />
+        <div id="result" className="result-block">
+          <ResultHeader />
+          <Result jsonData={parsedJson} />
+        </div>
       </div>
     </div>
   );

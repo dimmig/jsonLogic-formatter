@@ -4,7 +4,6 @@ import { renderExampleData } from "./subcomponentsHelper";
 import "../assets/styles/inputs.css";
 
 export const Rule = () => {
-
   return (
     <div>
       <div className="rule-button-block">
@@ -19,7 +18,7 @@ export const Rule = () => {
       <textarea
         spellCheck="false"
         placeholder="Type your rule here"
-        className="textarea"
+        className="textarea full-width-textarea"
         id="rule-textarea"
         onChange={(e) => isValid("rule-data", e.target.value)}
       />

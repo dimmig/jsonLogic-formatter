@@ -33,7 +33,7 @@ export const Data = () => {
       <textarea
         spellCheck="false"
         placeholder="Type your data here"
-        className="textarea"
+        className="textarea full-width-textarea"
         id="data-textarea"
         onChange={(e) => isValid("data", e.target.value)}
       />

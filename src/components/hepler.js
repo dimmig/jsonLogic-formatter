@@ -1,10 +1,23 @@
 import { apply } from "json-logic-js";
-import { NOT_VALID_OPTIONS, VALID_OPTIONS } from "../logic/constants";
+import {
+  NOT_VALID_DATA,
+  NOT_VALID_OPTIONS,
+  NOT_VALID_RULE,
+  VALID_OPTIONS,
+} from "../logic/constants";
 import { formatJSON } from "../logic/formatter/formatter";
 import { validate } from "../logic/validator";
 
 export const isValid = (type, jsonStr) => {
   try {
+    type === "rule-data"
+      ? document
+          .getElementById("rule-textarea")
+          .classList.remove("invalid-input")
+      : document
+          .getElementById("data-textarea")
+          .classList.remove("invalid-input");
+
     JSON.parse(jsonStr);
 
     if (areInputsFilled()) {
@@ -114,13 +127,26 @@ export const renderValidatedResult = (setParsedJson) => {
     setParsedJson(
       formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
     );
+    document.getElementById("rule-textarea").classList.add("invalid-input");
+    document.getElementById("data-textarea").classList.add("invalid-input");
     return;
   }
 
-  setParsedJson(
-    formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), validatedData)
+  const formattedResult = formatJSON(
+    JSON.parse(sessionStorage.getItem("rule-data")),
+    validatedData
   );
-  const resultElement = document.getElementById("result-p");
+  if (formattedResult === NOT_VALID_RULE) {
+    return document
+      .getElementById("rule-textarea")
+      .classList.add("invalid-input");
+  } else if (formattedResult === NOT_VALID_DATA) {
+    return document
+      .getElementById("data-textarea")
+      .classList.add("invalid-input");
+  }
+  setParsedJson(formattedResult);
+  const resultElement = document.getElementById("result");
 
   if (resultElement !== null && validatedData) {
     const ruleData = JSON.parse(sessionStorage.getItem("rule-data"));
@@ -135,6 +161,10 @@ export const renderValidatedResult = (setParsedJson) => {
 
     resultElement.classList.remove(resultClassToRemove);
     resultElement.classList.add(resultClassToAdd);
+
+    if (window.screen.width <= 800) {
+      scrollToBottom("result");
+    }
   }
 };
 
@@ -143,18 +173,39 @@ export const renderFormattedResult = (setParsedJson) => {
     setParsedJson(
       formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
     );
+    document.getElementById("rule-textarea").classList.add("invalid-input");
+    document.getElementById("data-textarea").classList.add("invalid-input");
     return;
   }
-  setParsedJson(
-    formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), false)
+
+  const formattedResult = formatJSON(
+    JSON.parse(sessionStorage.getItem("rule-data")),
+    false
   );
+  setParsedJson(formattedResult);
+
+  if (formattedResult === NOT_VALID_RULE) {
+    return document
+      .getElementById("rule-textarea")
+      .classList.add("invalid-input");
+  } else if (formattedResult === NOT_VALID_DATA) {
+    return document
+      .getElementById("data-textarea")
+      .classList.add("invalid-input");
+  }
+
+  if (window.screen.width <= 800) {
+    scrollToBottom("result");
+  }
 };
 
-export const scrollToBottom = (ref) => {
-  if (ref.current) {
-    ref.current.scrollIntoView({
-      behavior: "smooth",
-    });
+export const scrollToBottom = (id) => {
+  if (document.getElementById(id)) {
+    setTimeout(() => {
+      document.getElementById(id).scrollIntoView({
+        behavior: "smooth",
+      });
+    }, 0);
   }
 };
 
@@ -195,11 +246,9 @@ function removeUrlParams(url) {
   return url;
 }
 
-
-
-function isSaved() {
+export const isSaved = () => {
   return (
     sessionStorage.getItem("rule-data") !== null &&
     sessionStorage.getItem("data") !== null
   );
-}
+};
