@@ -46,7 +46,9 @@ code {
   width: 30vw;
   border: 1px solid #85bafa;
   border-top: none;
-  margin-bottom: 1rem;
+  height: 90vh;
+  overflow: hidden;
+
 }
 
 .active-part {
