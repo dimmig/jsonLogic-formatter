@@ -277,15 +277,30 @@ export const toggleBookmarksBlock = () => {
     bookmarks.classList.remove("invisible");
     bookmarks.animate(openKeyFrames, { duration: 50 });
     resultBlock.classList.add("short-result-area");
-    document
-      .querySelectorAll(".textarea")
-      .forEach((el) => el.classList.add("short-width-textarea"));
+    if (resultBlock.classList.contains("invisible")) {
+      document
+        .querySelectorAll(".textarea")
+        .forEach((el) => el.classList.add("result-on-textarea"));
+    } else {
+      document
+        .querySelectorAll(".textarea")
+        .forEach((el) => el.classList.add("short-width-textarea"));
+    }
   } else {
     bookmarks.animate(closeKeyFrames, { duration: 50 });
     resultBlock.classList.remove("short-result-area");
-    document
-      .querySelectorAll(".textarea")
-      .forEach((el) => el.classList.remove("short-width-textarea"));
+
+    if (resultBlock.classList.contains("invisible")) {
+      document.querySelectorAll(".textarea").forEach((el) => {
+        el.classList.remove("short-width-textarea");
+        el.classList.remove("result-on-textarea");
+      });
+    } else {
+      document.querySelectorAll(".textarea").forEach((el) => {
+        el.classList.remove("short-width-textarea");
+        el.classList.add("result-on-textarea");
+      });
+    }
     setTimeout(() => {
       bookmarks.classList.add("invisible");
     }, 50);

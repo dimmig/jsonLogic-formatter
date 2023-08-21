@@ -23,7 +23,7 @@ function App() {
             <Forms setParsedJson={setParsedJson} />
           </div>
         </div>
-        <div id="result" className="result-block">
+        <div id="result" className="result-block invisible">
           <ResultHeader />
           <Result jsonData={parsedJson} />
         </div>

@@ -23,11 +23,19 @@ code {
 }
 
 .main-app {
-  width: 50vw;
+  width: 100vw;
+}
+
+.result-on-textarea {
+  width: 40vw;
 }
 
 .short-width-textarea {
   width: 30vw;
+}
+
+.default-main-app {
+  width: 70vw;
 }
 
 .application {
@@ -46,9 +54,8 @@ code {
   width: 30vw;
   border: 1px solid #85bafa;
   border-top: none;
-  height: 90vh;
+  height: 92vh;
   overflow: hidden;
-
 }
 
 .active-part {
@@ -58,7 +65,7 @@ code {
 .result-block {
   width: 50vw;
   border-top: none;
-  height: 90vh;
+  height: 92vh;
   background-color: #fff;
   border: 1px solid #68a7ac;
   border-top: none;
@@ -67,7 +74,7 @@ code {
 
 .short-result-area {
   width: 40vw;
-}
+} 
 
 @media (max-width: 800px) {
   .bookmarks-part {

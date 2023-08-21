@@ -157,6 +157,25 @@ export const renderValidatedResult = (setParsedJson) => {
     const resultClassToAdd = isValid ? "green-border" : "red-border";
     const resultClassToRemove = isValid ? "red-border" : "green-border";
 
+    resultElement.classList.remove("invisible");
+    if (
+      document.getElementById("bookmarks-part").classList.contains("invisible")
+    ) {
+      document
+        .getElementById("rule-textarea")
+        .classList.add("short-width-textarea");
+      document
+        .getElementById("data-textarea")
+        .classList.add("short-width-textarea");
+    } else {
+      document
+        .getElementById("rule-textarea")
+        .classList.add("short-width-textarea");
+      document
+        .getElementById("data-textarea")
+        .classList.add("short-width-textarea");
+    }
+    document.getElementById("main-app").style.width = "50vw";
     resultElement.animate(animationOptions, { duration: 1000 });
 
     resultElement.classList.remove(resultClassToRemove);
