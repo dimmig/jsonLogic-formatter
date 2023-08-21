@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { BookmarkMenu } from "./components/bookmarks/BookmarkMenu";
 import { BookmarksHeader } from "./components/bookmarks/BookmarksHeader";
 import { Forms } from "./components/Form";
@@ -9,6 +9,14 @@ import "./index.css";
 
 function App() {
   const [parsedJson, setParsedJson] = useState(null);
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 800) {
+      document.getElementById("main-app").style.width = "50vw";
+    } else {
+      document.getElementById("main-app").style.width = "100vw";
+    }
+  });
 
   return (
     <div className="main-row">

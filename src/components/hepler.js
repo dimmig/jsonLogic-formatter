@@ -157,6 +157,12 @@ export const renderValidatedResult = (setParsedJson) => {
     const resultClassToAdd = isValid ? "green-border" : "red-border";
     const resultClassToRemove = isValid ? "red-border" : "green-border";
 
+    if (window.innerWidth > 800) {
+      document.getElementById("main-app").style.width = "50vw";
+    } else {
+      document.getElementById("main-app").style.width = "100vw";
+    }
+
     resultElement.classList.remove("invisible");
     if (
       document.getElementById("bookmarks-part").classList.contains("invisible")
@@ -175,7 +181,7 @@ export const renderValidatedResult = (setParsedJson) => {
         .getElementById("data-textarea")
         .classList.add("short-width-textarea");
     }
-    document.getElementById("main-app").style.width = "50vw";
+
     resultElement.animate(animationOptions, { duration: 1000 });
 
     resultElement.classList.remove(resultClassToRemove);
