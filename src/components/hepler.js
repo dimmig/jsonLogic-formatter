@@ -164,30 +164,26 @@ export const renderValidatedResult = (setParsedJson) => {
     }
 
     resultElement.classList.remove("invisible");
+
     if (
-      document.getElementById("bookmarks-part").classList.contains("invisible")
+      !document.getElementById("bookmarks-part").classList.contains("invisible")
     ) {
-      document
-        .getElementById("rule-textarea")
-        .classList.add("short-width-textarea");
-      document
-        .getElementById("data-textarea")
-        .classList.add("short-width-textarea");
-    } else {
-      document
-        .getElementById("rule-textarea")
-        .classList.add("short-width-textarea");
-      document
-        .getElementById("data-textarea")
-        .classList.add("short-width-textarea");
-    }
+      resultElement.classList.add("short-result-area");
+    } 
+
+    document
+      .getElementById("rule-textarea")
+      .classList.add("short-width-textarea");
+    document
+      .getElementById("data-textarea")
+      .classList.add("short-width-textarea");
 
     resultElement.animate(animationOptions, { duration: 1000 });
 
     resultElement.classList.remove(resultClassToRemove);
     resultElement.classList.add(resultClassToAdd);
 
-    if (window.screen.width <= 800) {
+    if (window.innerWidth <= 800) {
       scrollToBottom("result");
     }
   }
@@ -219,7 +215,29 @@ export const renderFormattedResult = (setParsedJson) => {
       .classList.add("invalid-input");
   }
 
-  if (window.screen.width <= 800) {
+  const resultElement = document.getElementById("result");
+  resultElement.classList.remove("invisible");
+
+  if (
+    !document.getElementById("bookmarks-part").classList.contains("invisible")
+  ) {
+    resultElement.classList.add("short-result-area");
+  } 
+
+  if (window.innerWidth > 800) {
+    document.getElementById("main-app").style.width = "50vw";
+  } else {
+    document.getElementById("main-app").style.width = "100vw";
+  }
+
+  document
+    .getElementById("rule-textarea")
+    .classList.add("short-width-textarea");
+  document
+    .getElementById("data-textarea")
+    .classList.add("short-width-textarea");
+
+  if (window.innerWidth <= 800) {
     scrollToBottom("result");
   }
 };

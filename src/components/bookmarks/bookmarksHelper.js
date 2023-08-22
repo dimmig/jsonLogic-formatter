@@ -35,6 +35,7 @@ export const addBookmark = (stateBookmarks, bookmarkName, object) => {
           ));
       stateBookmarks.splice(index, 1, {
         [bookmarkName]: link,
+        active: false,
       });
 
       return stateBookmarks;
@@ -68,6 +69,7 @@ export const addBookmark = (stateBookmarks, bookmarkName, object) => {
           ));
       stateBookmarks.push({
         [bookmarkName]: link,
+        active: false,
       });
       return stateBookmarks;
     }
@@ -82,6 +84,7 @@ export const addBookmark = (stateBookmarks, bookmarkName, object) => {
     return [
       {
         [bookmarkName]: link,
+        active: false,
       },
       ...stateBookmarks,
     ];
@@ -263,6 +266,8 @@ export const onTimeoutEnd = () => {
 };
 
 export const toggleBookmarksBlock = () => {
+  localStorage.setItem("bookmarks-active", true);
+
   const openKeyFrames = [
     { width: 0, opacity: 0 },
     { width: "30vw", opacity: 1 },
@@ -287,6 +292,7 @@ export const toggleBookmarksBlock = () => {
         .forEach((el) => el.classList.add("short-width-textarea"));
     }
   } else {
+    localStorage.setItem("bookmarks-active", false);
     bookmarks.animate(closeKeyFrames, { duration: 50 });
     resultBlock.classList.remove("short-result-area");
 

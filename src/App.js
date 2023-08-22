@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BookmarkMenu } from "./components/bookmarks/BookmarkMenu";
 import { BookmarksHeader } from "./components/bookmarks/BookmarksHeader";
 import { Forms } from "./components/Form";
@@ -9,9 +9,32 @@ import "./index.css";
 
 function App() {
   const [parsedJson, setParsedJson] = useState(null);
+  const [bookmarksClass, setBookmarksClass] = useState("");
+
+  useEffect(() => {
+    const isBookmarksActive = JSON.parse(
+      localStorage.getItem("bookmarks-active")
+    );
+    if (!isBookmarksActive) {
+      setBookmarksClass("invisible");
+      return document
+        .getElementById("result")
+        .classList.remove("short-result-area");
+    }
+    document
+      .getElementById("rule-textarea")
+      .classList.add("short-width-textarea");
+    document
+      .getElementById("data-textarea")
+      .classList.add("short-width-textarea");
+    document.getElementById("result").classList.add("short-result-area");
+  }, []);
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 800) {
+    if (
+      window.innerWidth > 800 &&
+      !document.getElementById("result").classList.contains("invisible")
+    ) {
       document.getElementById("main-app").style.width = "50vw";
     } else {
       document.getElementById("main-app").style.width = "100vw";
@@ -21,7 +44,7 @@ function App() {
   return (
     <div className="main-row">
       <div className="application">
-        <div className="bookmarks-part invisible" id="bookmarks-part">
+        <div className={bookmarksClass + " bookmarks-part"} id="bookmarks-part">
           <BookmarksHeader />
           <BookmarkMenu />
         </div>

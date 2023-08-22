@@ -19,7 +19,6 @@ import "../assets/styles/inputs.css";
 import "../assets/styles/bookmark.css";
 import "../assets/styles/form.css";
 import Lottie from "lottie-react";
-import { ANIMATED_OPTIONS } from "../../logic/constants";
 import { BookmarksList } from "./BookmarksList";
 
 export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
