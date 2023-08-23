@@ -2,8 +2,8 @@ import React from "react";
 import { toggleBookmarksBlock } from "./bookmarks/bookmarksHelper";
 import { LuBraces } from "react-icons/lu";
 import menuAnimation from "./assets/icons/menuAnimation.json";
-import "./assets/styles/header.css";
 import Lottie from "lottie-react";
+import "./assets/styles/header.css";
 
 export const Header = () => {
   return (

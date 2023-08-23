@@ -20,7 +20,7 @@ export const Rule = () => {
         placeholder="Type your rule here"
         className="textarea full-width-textarea"
         id="rule-textarea"
-        onChange={(e) => isValid("rule-data", e.target.value)}
+        onChange={(e) => isValid("rule", e.target.value)}
       />
     </div>
   );

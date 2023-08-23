@@ -10,23 +10,20 @@ import {
   handleDataForExport,
   onTimeoutEnd,
   removeNameInput,
-  resizeBookmarksPart,
   toggleAddingBookmark,
 } from "./bookmarksHelper";
 import { FileInput } from "../subcomponents/FileInput";
 import { ExportButton } from "../subcomponents/ExportButton";
+import { BookmarksList } from "./BookmarksList";
+import Lottie from "lottie-react";
 import "../assets/styles/inputs.css";
 import "../assets/styles/bookmark.css";
 import "../assets/styles/form.css";
-import Lottie from "lottie-react";
-import { BookmarksList } from "./BookmarksList";
 
 export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
   const bookmarks = JSON.parse(localStorage.getItem("bookmarks"));
 
   const listRef = useRef(null);
-  const wrapperRef = useRef(null);
-  const cancelInput = useRef(null);
   const searchInput = useRef(null);
   const [stateBookmarks, setStateBookmarks] = useState(bookmarks || []);
   const [searchBookmarks, setSearchBookmarks] = useState([]);
@@ -48,8 +45,6 @@ export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
       setInputDisabled(false);
       document.getElementById("clear-all-button").classList.remove("disabled");
       document.getElementById("export-button").classList.remove("disabled");
-
-      resizeBookmarksPart();
     } else {
       setInputDisabled(true);
       document.getElementById("clear-all-button").classList.add("disabled");
@@ -83,7 +78,7 @@ export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
       }
 
       return (
-        <div className="li-block" key={name} ref={cancelInput} id={name}>
+        <div className="li-block" key={name} id={name}>
           <li>
             <div className="input-open-block">
               <input
@@ -170,7 +165,7 @@ export const BookmarkMenu = ({ setHeadingBookmarkName }) => {
   }
 
   return (
-    <div className="bookmark-wrapper" ref={wrapperRef} id="bookmark-wrapper">
+    <div className="bookmark-wrapper" id="bookmark-wrapper">
       <div className="bookmark-button">
         <div className="button-file-input" id="button-file-input">
           <button

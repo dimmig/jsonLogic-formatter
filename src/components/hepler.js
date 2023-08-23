@@ -10,7 +10,7 @@ import { validate } from "../logic/validator";
 
 export const isValid = (type, jsonStr) => {
   try {
-    type === "rule-data"
+    type === "rule"
       ? document
           .getElementById("rule-textarea")
           .classList.remove("invalid-input")
@@ -80,7 +80,7 @@ export const encodeUrl = (
   const url = removeUrlParams(new URL(window.location.href));
 
   if (rule !== null && data !== null && !isFile) {
-    rule = JSON.parse(sessionStorage.getItem("rule-data"));
+    rule = JSON.parse(sessionStorage.getItem("rule"));
     data = JSON.parse(sessionStorage.getItem("data"));
     const filtredData = filterData(rule, data);
 
@@ -97,17 +97,18 @@ export const encodeUrl = (
       url.searchParams.delete("section");
     }
   }
+  if (isFile) {
+    if (rule !== null) {
+      url.searchParams.set("rule", btoa(JSON.stringify(rule)));
+    }
 
-  if (isFile && rule !== null) {
-    url.searchParams.set("rule", btoa(JSON.stringify(rule)));
-  }
+    if (data !== null) {
+      url.searchParams.set("data", btoa(JSON.stringify(data)));
+    }
 
-  if (isFile && data !== null) {
-    url.searchParams.set("data", btoa(JSON.stringify(data)));
-  }
-
-  if (isFile && section !== null) {
-    url.searchParams.set("section", btoa(JSON.stringify(section)));
+    if (section !== null) {
+      url.searchParams.set("section", btoa(JSON.stringify(section)));
+    }
   }
 
   if (bookmarkName !== null) {
@@ -117,25 +118,30 @@ export const encodeUrl = (
   return url;
 };
 
-export const renderValidatedResult = (setParsedJson) => {
+export const renderResult = (setParsedJson, needToValidate) => {
   let validatedData = validate(
-    JSON.parse(sessionStorage.getItem("rule-data")),
+    JSON.parse(sessionStorage.getItem("rule")),
     JSON.parse(sessionStorage.getItem("data"))
   );
 
   if (areInputsClear()) {
-    setParsedJson(
-      formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
-    );
+    setParsedJson(formatJSON(JSON.parse(sessionStorage.getItem("rule")), null));
     document.getElementById("rule-textarea").classList.add("invalid-input");
     document.getElementById("data-textarea").classList.add("invalid-input");
     return;
   }
 
-  const formattedResult = formatJSON(
-    JSON.parse(sessionStorage.getItem("rule-data")),
-    validatedData
-  );
+  let formattedResult = null;
+  needToValidate
+    ? (formattedResult = formatJSON(
+        JSON.parse(sessionStorage.getItem("rule")),
+        validatedData
+      ))
+    : (formattedResult = formatJSON(
+        JSON.parse(sessionStorage.getItem("rule")),
+        false
+      ));
+
   if (formattedResult === NOT_VALID_RULE) {
     return document
       .getElementById("rule-textarea")
@@ -145,18 +151,11 @@ export const renderValidatedResult = (setParsedJson) => {
       .getElementById("data-textarea")
       .classList.add("invalid-input");
   }
+
   setParsedJson(formattedResult);
   const resultElement = document.getElementById("result");
 
-  if (resultElement !== null && validatedData) {
-    const ruleData = JSON.parse(sessionStorage.getItem("rule-data"));
-    const jsonData = JSON.parse(sessionStorage.getItem("data"));
-    const isValid = fullValidation(ruleData, jsonData);
-
-    const animationOptions = isValid ? VALID_OPTIONS : NOT_VALID_OPTIONS;
-    const resultClassToAdd = isValid ? "green-border" : "red-border";
-    const resultClassToRemove = isValid ? "red-border" : "green-border";
-
+  if (resultElement !== null) {
     if (window.innerWidth > 800) {
       document.getElementById("main-app").style.width = "50vw";
     } else {
@@ -169,76 +168,30 @@ export const renderValidatedResult = (setParsedJson) => {
       !document.getElementById("bookmarks-part").classList.contains("invisible")
     ) {
       resultElement.classList.add("short-result-area");
-    } 
+    }
 
-    document
-      .getElementById("rule-textarea")
-      .classList.add("short-width-textarea");
-    document
-      .getElementById("data-textarea")
-      .classList.add("short-width-textarea");
+    document.querySelectorAll(".textarea").forEach((el) => {
+      el.classList.add("short-width-textarea");
+      el.classList.remove("result-off");
+    });
 
-    resultElement.animate(animationOptions, { duration: 1000 });
+    if (needToValidate) {
+      const rule = JSON.parse(sessionStorage.getItem("rule"));
+      const data = JSON.parse(sessionStorage.getItem("data"));
+      const isValid = fullValidation(rule, data);
 
-    resultElement.classList.remove(resultClassToRemove);
-    resultElement.classList.add(resultClassToAdd);
+      const animationOptions = isValid ? VALID_OPTIONS : NOT_VALID_OPTIONS;
+      const resultClassToAdd = isValid ? "green-border" : "red-border";
+      const resultClassToRemove = isValid ? "red-border" : "green-border";
+      resultElement.animate(animationOptions, { duration: 1000 });
+
+      resultElement.classList.remove(resultClassToRemove);
+      resultElement.classList.add(resultClassToAdd);
+    }
 
     if (window.innerWidth <= 800) {
       scrollToBottom("result");
     }
-  }
-};
-
-export const renderFormattedResult = (setParsedJson) => {
-  if (areInputsClear()) {
-    setParsedJson(
-      formatJSON(JSON.parse(sessionStorage.getItem("rule-data")), null)
-    );
-    document.getElementById("rule-textarea").classList.add("invalid-input");
-    document.getElementById("data-textarea").classList.add("invalid-input");
-    return;
-  }
-
-  const formattedResult = formatJSON(
-    JSON.parse(sessionStorage.getItem("rule-data")),
-    false
-  );
-  setParsedJson(formattedResult);
-
-  if (formattedResult === NOT_VALID_RULE) {
-    return document
-      .getElementById("rule-textarea")
-      .classList.add("invalid-input");
-  } else if (formattedResult === NOT_VALID_DATA) {
-    return document
-      .getElementById("data-textarea")
-      .classList.add("invalid-input");
-  }
-
-  const resultElement = document.getElementById("result");
-  resultElement.classList.remove("invisible");
-
-  if (
-    !document.getElementById("bookmarks-part").classList.contains("invisible")
-  ) {
-    resultElement.classList.add("short-result-area");
-  } 
-
-  if (window.innerWidth > 800) {
-    document.getElementById("main-app").style.width = "50vw";
-  } else {
-    document.getElementById("main-app").style.width = "100vw";
-  }
-
-  document
-    .getElementById("rule-textarea")
-    .classList.add("short-width-textarea");
-  document
-    .getElementById("data-textarea")
-    .classList.add("short-width-textarea");
-
-  if (window.innerWidth <= 800) {
-    scrollToBottom("result");
   }
 };
 
@@ -254,6 +207,18 @@ export const scrollToBottom = (id) => {
 
 export const fullValidation = (rule, data) => {
   return apply(JSON.parse(rule), JSON.parse(data));
+};
+
+export const save = (rule, data) => {
+  sessionStorage.setItem("rule", JSON.stringify(rule));
+  sessionStorage.setItem("data", JSON.stringify(data));
+}
+
+export const isSaved = () => {
+  return (
+    sessionStorage.getItem("rule") !== null &&
+    sessionStorage.getItem("data") !== null
+  );
 };
 
 function filterData(rule, data) {
@@ -276,11 +241,6 @@ function filterData(rule, data) {
   return result;
 }
 
-export function save(rule, data) {
-  sessionStorage.setItem("rule-data", JSON.stringify(rule));
-  sessionStorage.setItem("data", JSON.stringify(data));
-}
-
 function removeUrlParams(url) {
   url.searchParams.delete("rule");
   url.searchParams.delete("data");
@@ -288,10 +248,3 @@ function removeUrlParams(url) {
   url.searchParams.delete("section");
   return url;
 }
-
-export const isSaved = () => {
-  return (
-    sessionStorage.getItem("rule-data") !== null &&
-    sessionStorage.getItem("data") !== null
-  );
-};

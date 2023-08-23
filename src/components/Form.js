@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Data } from "./subcomponents/Data";
 import { Rule } from "./subcomponents/Rule";
-import {
-  renderDecodedUrl,
-  renderFormattedResult,
-  renderValidatedResult,
-} from "./hepler";
+import { renderDecodedUrl, renderResult } from "./hepler";
 import "./assets/styles/form.css";
 
 export const Forms = ({ setParsedJson }) => {
@@ -31,13 +27,13 @@ export const Forms = ({ setParsedJson }) => {
     <div className="app" id="app">
       {headingBookmarkName ? (
         <h1 className="heading">
-          Bookmark: {" "} 
+          Bookmark:{" "}
           <span className="bookmarks-length">{headingBookmarkName}</span>
         </h1>
       ) : (
         <></>
       )}
-      <div className="form" id="rule-data-inputs">
+      <div className="form">
         <Rule />
         <Data />
       </div>
@@ -46,14 +42,14 @@ export const Forms = ({ setParsedJson }) => {
           <button
             className="default-button"
             id="validation-button"
-            onClick={() => renderValidatedResult(setParsedJson)}
+            onClick={() => renderResult(setParsedJson, true)}
           >
             Validate
           </button>
 
           <button
             className="default-button"
-            onClick={() => renderFormattedResult(setParsedJson)}
+            onClick={() => renderResult(setParsedJson, false)}
           >
             Format
           </button>

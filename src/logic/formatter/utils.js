@@ -34,18 +34,17 @@ export function isOrCondition(value) {
   return value === "or";
 }
 
-function createTooltip(name) {
+function generateTooltip(name) {
   const data = JSON.parse(sessionStorage.getItem("data"));
   return `<span class="tooltip inner-tooltip">${JSON.parse(data)[name]}</span>`;
 }
 
-function createItems(vars) {
-  return vars.map((item) => {
+function generateTooltips(variables) {
+  return variables.map((item) => {
     if (typeof item === "number") {
       return item;
-    } else {
-      return `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>"${item}"</span>}`; // data with tooltip
     }
+    return `{"var":<span class="var-name" id="var-data"><span class="tooltip inner-tooltip" id="tooltip"></span>"${item}"</span>}`; // data with tooltip
   });
 }
 
@@ -61,7 +60,7 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       }
     }
 
-    let data = createItems(vars);
+    let data = generateTooltips(vars);
 
     const braces = lastBrace ? "]}]}" : "]}]},";
 
@@ -85,7 +84,7 @@ function createResponsiveItem(obj, status, lastBrace = false) {
       for (const innerObj of Object.values(obj[0])[0]) {
         vars.push(innerObj.var ? innerObj.var : innerObj);
       }
-      let data = createItems(vars);
+      let data = generateTooltips(vars);
       const key = Object.keys(obj[0])[0];
       return `[{"${key}":<span class="${status}">[${data.join(",")}]},${
         obj[1]
@@ -98,7 +97,7 @@ function createResponsiveItem(obj, status, lastBrace = false) {
     obj[0].var
   }</span>"},${JSON.stringify(obj[1])}${
     lastBrace ? "]}" : "]},"
-  }${createTooltip(obj[0].var)}</span>\n`;
+  }${generateTooltip(obj[0].var)}</span>\n`;
 }
 
 function addHtml(

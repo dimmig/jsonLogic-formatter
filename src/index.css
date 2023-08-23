@@ -26,16 +26,16 @@ code {
   width: 100vw;
 }
 
-.result-on-textarea {
-  width: 40vw;
+.result-on {
+  width: 30vw;
 }
 
 .short-width-textarea {
   width: 30vw;
 }
 
-.default-main-app {
-  width: 70vw;
+.result-off {
+  width: 50vw;
 }
 
 .application {
@@ -54,7 +54,7 @@ code {
   width: 30vw;
   border: 1px solid #85bafa;
   border-top: none;
-  height: 92vh;
+  height: 96vh;
   overflow: hidden;
 }
 
@@ -63,9 +63,9 @@ code {
 }
 
 .result-block {
-  width: 50vw;
   border-top: none;
-  height: 92vh;
+  height: 96vh;
+  width: 80vw;
   background-color: #fff;
   border: 1px solid #68a7ac;
   border-top: none;
@@ -74,19 +74,11 @@ code {
 
 .short-result-area {
   width: 40vw;
-} 
+}
 
 @media (max-width: 800px) {
   .bookmarks-part {
     display: none;
-  }
-
-  .show-tip {
-    display: none;
-  }
-
-  .main-app {
-    width: 100vw;
   }
 
   .application {

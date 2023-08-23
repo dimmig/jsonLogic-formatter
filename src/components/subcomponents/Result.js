@@ -3,7 +3,6 @@ import { AiOutlineCopy, AiOutlineCheckCircle } from "react-icons/ai";
 import { NOT_VALID_DATA, NOT_VALID_RULE } from "../../logic/constants";
 import { addFocusEvent, addHoverEvent, copy } from "./subcomponentsHelper";
 import "../assets/styles/inputs.css";
-import { resizeBookmarksPart } from "../bookmarks/bookmarksHelper";
 
 export const Result = (props) => {
   const [isCopied, setIsCopied] = useState(false);
@@ -30,7 +29,6 @@ export const Result = (props) => {
           ? addHoverEvent(varData)
           : addFocusEvent(varData);
       }
-      resizeBookmarksPart();
     }
   }, [props.jsonData]);
 

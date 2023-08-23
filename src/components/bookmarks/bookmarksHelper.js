@@ -1,3 +1,4 @@
+import { CLOSE_OPTIONS, OPEN_OPTIOSN } from "../../logic/constants";
 import { areInputsFilled, encodeUrl, isSaved } from "../hepler";
 
 export const addBookmark = (stateBookmarks, bookmarkName, object) => {
@@ -141,7 +142,8 @@ export const removeNameInput = () => {
 
 export const clearAllBookmarks = (setSearchBookmarks, setStateBookmarks) => {
   if (window.confirm("Do you want to delete ALL the bookmars")) {
-    localStorage.clear();
+    localStorage.removeItem("bookmarks");
+    localStorage.removeItem("bookmarks-before-search");
     setSearchBookmarks([]);
     setStateBookmarks([]);
   }
@@ -267,64 +269,40 @@ export const onTimeoutEnd = () => {
 
 export const toggleBookmarksBlock = () => {
   localStorage.setItem("bookmarks-active", true);
-
-  const openKeyFrames = [
-    { width: 0, opacity: 0 },
-    { width: "30vw", opacity: 1 },
-  ];
-  const closeKeyFrames = [
-    { width: "30vw", opacity: 1 },
-    { width: 0, opacity: 0 },
-  ];
   const bookmarks = document.getElementById("bookmarks-part");
   const resultBlock = document.getElementById("result");
   if (bookmarks.classList.contains("invisible")) {
     bookmarks.classList.remove("invisible");
-    bookmarks.animate(openKeyFrames, { duration: 50 });
-    resultBlock.classList.add("short-result-area");
+    bookmarks.animate(OPEN_OPTIOSN, { duration: 50 });
     if (resultBlock.classList.contains("invisible")) {
       document
         .querySelectorAll(".textarea")
-        .forEach((el) => el.classList.add("result-on-textarea"));
+        .forEach((el) => el.classList.add("result-off"));
     } else {
       document
         .querySelectorAll(".textarea")
-        .forEach((el) => el.classList.add("short-width-textarea"));
+        .forEach((el) => el.classList.add("result-on-textarea"));
+      resultBlock.classList.add("short-result-area");
     }
   } else {
     localStorage.setItem("bookmarks-active", false);
-    bookmarks.animate(closeKeyFrames, { duration: 50 });
+    bookmarks.animate(CLOSE_OPTIONS, { duration: 50 });
     resultBlock.classList.remove("short-result-area");
 
     if (resultBlock.classList.contains("invisible")) {
       document.querySelectorAll(".textarea").forEach((el) => {
-        el.classList.remove("short-width-textarea");
+        el.classList.remove("result-off");
         el.classList.remove("result-on-textarea");
       });
     } else {
       document.querySelectorAll(".textarea").forEach((el) => {
-        el.classList.remove("short-width-textarea");
+        el.classList.remove("result-off");
         el.classList.add("result-on-textarea");
       });
     }
     setTimeout(() => {
       bookmarks.classList.add("invisible");
     }, 50);
-  }
-};
-
-export const resizeBookmarksPart = () => {
-  const list = document.getElementById("list");
-  const formsComponent = document.getElementById("forms");
-  const label = document.getElementById("label");
-
-  if (list && formsComponent) {
-    const bookmarkHeight = formsComponent.clientHeight;
-    if (label.classList.contains("disabled-file-input")) {
-      list.style.height = `${bookmarkHeight - 400}px`;
-    } else {
-      list.style.height = `${bookmarkHeight - 300}px`;
-    }
   }
 };
 

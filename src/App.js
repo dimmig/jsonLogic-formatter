@@ -21,12 +21,14 @@ function App() {
         .getElementById("result")
         .classList.remove("short-result-area");
     }
-    document
-      .getElementById("rule-textarea")
-      .classList.add("short-width-textarea");
-    document
-      .getElementById("data-textarea")
-      .classList.add("short-width-textarea");
+
+    document.querySelectorAll(".textarea").forEach((el) => {
+      if (!document.getElementById("result").classList.contains("invisible")) {
+        el.classList.add("short-width-textarea");
+      } else {
+        el.classList.add("result-off");
+      }
+    });
     document.getElementById("result").classList.add("short-result-area");
   }, []);
 
@@ -42,7 +44,7 @@ function App() {
   });
 
   return (
-    <div className="main-row">
+    <div>
       <div className="application">
         <div className={bookmarksClass + " bookmarks-part"} id="bookmarks-part">
           <BookmarksHeader />

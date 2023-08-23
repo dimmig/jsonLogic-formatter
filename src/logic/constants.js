@@ -27,6 +27,15 @@ export const NOT_VALID_OPTIONS = [
   { backgroundColor: "rgba(250, 105, 73, 0)" },
 ];
 
+export const OPEN_OPTIOSN = [
+  { width: 0, opacity: 0 },
+  { width: "30vw", opacity: 1 },
+];
+export const CLOSE_OPTIONS = [
+  { width: "30vw", opacity: 1 },
+  { width: 0, opacity: 0 },
+];
+
 export const ANIMATED_OPTIONS = {
   loop: false,
   autoplay: true,
