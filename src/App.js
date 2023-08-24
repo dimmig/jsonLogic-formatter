@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BookmarkMenu } from "./components/bookmarks/BookmarkMenu";
 import { BookmarksHeader } from "./components/bookmarks/BookmarksHeader";
-import { Forms } from "./components/Form";
+import { Inputs } from "./components/Form";
 import { Header } from "./components/Header";
 import { Result } from "./components/subcomponents/Result";
 import { ResultHeader } from "./components/subcomponents/ResultHeader";
@@ -53,7 +53,7 @@ function App() {
         <div className="main-app" id="main-app">
           <Header />
           <div className="forms" id="forms">
-            <Forms setParsedJson={setParsedJson} />
+            <Inputs setParsedJson={setParsedJson} />
           </div>
         </div>
         <div id="result" className="result-block invisible">

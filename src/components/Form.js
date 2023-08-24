@@ -4,7 +4,7 @@ import { Rule } from "./subcomponents/Rule";
 import { renderDecodedUrl, renderResult } from "./hepler";
 import "./assets/styles/form.css";
 
-export const Forms = ({ setParsedJson }) => {
+export const Inputs = ({ setParsedJson }) => {
   const [headingBookmarkName, setHeadingBookmarkName] = useState(null);
 
   useEffect(() => {

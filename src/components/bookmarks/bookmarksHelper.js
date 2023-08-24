@@ -289,17 +289,15 @@ export const toggleBookmarksBlock = () => {
     bookmarks.animate(CLOSE_OPTIONS, { duration: 50 });
     resultBlock.classList.remove("short-result-area");
 
-    if (resultBlock.classList.contains("invisible")) {
-      document.querySelectorAll(".textarea").forEach((el) => {
-        el.classList.remove("result-off");
+    document.querySelectorAll(".textarea").forEach((el) => {
+      el.classList.remove("result-off");
+      if (resultBlock.classList.contains("invisible")) {
         el.classList.remove("result-on-textarea");
-      });
-    } else {
-      document.querySelectorAll(".textarea").forEach((el) => {
-        el.classList.remove("result-off");
+      } else {
         el.classList.add("result-on-textarea");
-      });
-    }
+      }
+    });
+
     setTimeout(() => {
       bookmarks.classList.add("invisible");
     }, 50);
