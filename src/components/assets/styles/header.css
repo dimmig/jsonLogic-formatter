@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  height: 2.5rem;
+  background-color: #fac585;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.result-header {
+  background-color: #68a7ac;
+  transition: all 0.1s ease;
+}
+
+.bookmarks-header-block {
+  background-color: #85bafa;
+  position: relative;
+}
+
+.menu-icon {
+  position: absolute;
+  left: 1rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.menu-icon:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.logo-icon {
+  color: #e65c00;
+  font-weight: 500;
+}
+
+.auto-type {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.5rem;
+  color: #fff;
+  width: max-content;
+  white-space: pre;
+}
+
+@media (max-width: 800px) {
+  .menu-icon {
+    display: none;
+  }
+
+  .result-header {
+    display: none;
+  }
+}

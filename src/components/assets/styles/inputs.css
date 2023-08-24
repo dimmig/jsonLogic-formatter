@@ -1,0 +1,286 @@
+.heading {
+  font-family: "Roboto";
+  font-size: 32px;
+  text-align: center;
+}
+
+pre {
+  width: 50vw;
+  display: flex;
+  align-items: center;
+}
+
+.textarea {
+  height: 25vh;
+  width: 90vw;
+  min-width: 270px;
+  font-size: 20px;
+  font-family: "Open Sans";
+  font-weight: 200;
+  margin-top: 15px;
+  outline: none;
+  resize: none;
+  border: 1px solid #fac585;
+  transition: 0.1s all ease;
+}
+
+.textarea:focus {
+  outline: none;
+  border: 1px solid #fac585;
+  box-shadow: 0 0 10px #fac585;
+  transition: all 0.1s ease;
+}
+
+.textarea-block {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.rule-button-block {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-textarea {
+  white-space: nowrap;
+  background-color: none;
+  overflow-y: auto;
+  margin: 0 1rem;
+  border: none;
+  height: 85vh;
+}
+
+#result-area > p {
+  font-size: 16px;
+  font-weight: 200;
+}
+
+.copy-button {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+  width: max-content;
+  height: 30px;
+  outline: none;
+  border: 1px solid #000;
+  background-color: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  transition: all 0.1s ease;
+  z-index: 2;
+}
+
+.copy-button span {
+  display: flex;
+  align-items: center;
+  gap: 5%;
+}
+
+.copy-button:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.copy-icon {
+  font-size: 10px;
+}
+
+.var-name {
+  position: relative;
+}
+.tooltip {
+  position: absolute;
+  height: max-content;
+  width: max-content;
+  background-color: #e65c00;
+  color: #fff;
+  padding: 0 5px;
+  display: none;
+}
+
+.inner-tooltip {
+  left: 0;
+  right: 0;
+  bottom: 1.5rem;
+  margin: auto;
+}
+
+.var-name:hover + .tooltip {
+  display: inline-block;
+}
+
+.active-tooltip {
+  display: inline-block;
+}
+
+.var-name:hover {
+  background-color: #fac585;
+  cursor: default;
+}
+
+.green {
+  color: green;
+  position: relative;
+}
+
+.red {
+  color: red;
+  position: relative;
+}
+
+.default {
+  background-color: #e65c00;
+  color: #fff;
+  display: inline-block;
+  padding: 0 10px;
+  margin: 10px;
+  margin-bottom: 0;
+}
+
+.green-border {
+  border: 1px solid rgb(23, 185, 23);
+  box-shadow: 0 0 5px rgb(23, 185, 23);
+}
+
+.red-border {
+  border: 1px solid rgb(250, 43, 43);
+  box-shadow: 0 0 5px rgb(250, 43, 43);
+}
+
+.buttons-wrapper {
+  display: flex;
+  width: 70vw;
+  flex-direction: row;
+  align-items: center;
+}
+
+.custom-file-input {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.file-label {
+  background-color: #85bafa;
+  color: #fff;
+  border-radius: 4px;
+  width: 8rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-label:hover {
+  cursor: pointer;
+}
+
+.file-input {
+  width: 8rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-name {
+  font-style: italic;
+}
+
+.disabled-file-input {
+  background-color: #fff;
+  color: #85bafa;
+  border: 1px solid #85bafa;
+  padding: 1rem;
+  width: 15vw;
+}
+
+.disabled-file-input:hover {
+  background-color: #e8f8ff;
+}
+
+.file-span {
+  color: #000;
+  opacity: 0.5;
+  padding: 0 0.5rem;
+}
+
+.file-name-span {
+  width: 15vw;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.length-span {
+  color: #1a7ef8;
+}
+
+.file-name-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.file-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.file-input-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.file-input-btn {
+  height: 3rem;
+  width: 7rem;
+  font-size: 1em;
+  font-family: "Open Sans";
+  outline: none;
+  background-color: #fff;
+  color: #54a1ff;
+  transition: all 0.2s ease;
+  width: max-content;
+  border: 1px solid #85bafa;
+  padding: 0 1rem;
+}
+
+@media (max-width: 800px) {
+  .textarea {
+    width: 50vw;
+    height: 15rem;
+  }
+
+  code {
+    display: block;
+    width: 90vw;
+  }
+
+  .result-textarea {
+    width: 90vw;
+    height: max-content;
+    overflow: scroll;
+    margin: 0;
+  }
+}
