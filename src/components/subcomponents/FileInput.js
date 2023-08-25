@@ -28,8 +28,24 @@ export const FileInput = ({
         const fileContent = JSON.parse(event.target.result);
 
         for (const object of fileContent) {
-          const bookmarkName = object.subpart + object.section;
+          let bookmarkName;
+          if (object.subpart && object.subpart.length > 0) {
+            if (object.section) {
+              bookmarkName = object.subpart + object.section;
+            } else {
+              bookmarkName = object.subpart;
+            }
+          }
+
+          if (!bookmarkName || bookmarkName.length === 0) {
+            return false;
+          }
+
           resultedBookmarks = addBookmark(stateBookmarks, bookmarkName, object);
+          if (!resultedBookmarks) {
+            return false;
+          }
+
           if (!resultedBookmarks.length) {
             resultedBookmarks = [...resultedBookmarks, ...stateBookmarks];
           }
@@ -68,19 +84,18 @@ export const FileInput = ({
             .getElementById("add-bookmark-button")
             .classList.remove("none-border");
         }, 1000);
-
         return true;
       };
-
       reader.readAsText(file);
     }
+    return true
   }
 
   function handleFileChange(e) {
     const file = e.target.files[0];
-    setFileName(file ? file.name : "");
-    setFileData(file);
-    handleFileUpload(file);
+      setFileName(file ? file.name : "");
+      setFileData(file);
+      handleFileUpload(file)
   }
 
   return (

@@ -7,8 +7,11 @@ export const addBookmark = (stateBookmarks, bookmarkName, object) => {
   let expression = null;
   let sampleData = null;
 
-  if (object) {
+  if (object && object.hasOwnProperty("expression")) {
     expression = object.expression;
+  }
+
+  if (object.hasOwnProperty("sample_data")) {
     sampleData = object.sample_data;
   }
 
